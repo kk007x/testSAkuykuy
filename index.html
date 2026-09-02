@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SynergyScore Mobile App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* สไตล์กำหนดสีปุ่มแบบโปร่งแสง 85% และสว่าง 100% เมื่อชี้ (Hover) */
+        .btn-green {
+            background-color: rgba(34, 197, 94, 0.85) !important;
+            color: #ffffff !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-green:hover, .btn-green:active {
+            background-color: rgba(34, 197, 94, 1.0) !important;
+        }
+
+        .btn-blue {
+            background-color: rgba(37, 99, 235, 0.85) !important;
+            color: #ffffff !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-blue:hover, .btn-blue:active {
+            background-color: rgba(37, 99, 235, 1.0) !important;
+        }
+
+        .btn-social {
+            background-color: rgba(243, 244, 246, 0.85) !important;
+            border: 1px solid #d1d5db;
+            color: #374151 !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-social:hover, .btn-social:active {
+            background-color: rgba(229, 231, 235, 1.0) !important;
+        }
+
+        /* ล้างค่าความกว้างและสไตล์เดิมของ input[type="date"] บน iOS/Android */
+        input[type="date"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            display: block;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            min-height: 42px;
+            background-color: #ffffff;
+        }
+        input[type="date"]::-webkit-date-and-time-value {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ซ่อน Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#1f2022] min-h-screen flex items-center justify-center p-4 font-sans text-gray-900">
+
+    <!-- Container หลัก -->
+    <div class="w-full max-w-md my-auto">
+        
+        <!-- ==========================================
+             PAGE 1: LOGIN PAGE
+             ========================================== -->
+        <div id="login-page" class="app-page bg-white rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between min-h-[580px] transition-all">
+            <div class="text-center pt-2 mb-6">
+                <h1 class="text-3xl font-extrabold text-[#22c55e] tracking-tight">SynergyScore</h1>
+                <h2 class="text-3xl font-bold text-black mt-1">Sign In</h2>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4 my-auto">
+                <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="login-email" class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="login-email" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label for="login-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-password" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" required>
+                </div>
+
+                <div class="text-right">
+                    <a href="#" onclick="navigateTo('reset-password-page')" class="text-xs text-blue-500 hover:text-blue-700 font-medium">Reset Password ?</a>
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="w-full btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md">
+                    Login
+                </button>
+
+                <div class="text-center my-3">
+                    <span class="text-xs text-gray-400 font-medium">Or Continue With</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">Google</button>
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">Microsoft</button>
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">LinkedIn</button>
+                </div>
+            </form>
+
+            <div class="text-center text-xs pt-4">
+                <span class="text-gray-600">Don’t have an account?</span>
+                <a href="#" onclick="navigateTo('role-page')" class="text-[#22c55e] font-bold ml-1 cursor-pointer">Create New Account</a>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 2: ROLE SELECTION PAGE
+             ========================================== -->
+        <div id="role-page" class="app-page hidden bg-white border-2 border-[#0ea5e9] rounded-2xl p-6 sm:p-8 shadow-2xl flex-col justify-between min-h-[580px] transition-all">
+            <h2 class="text-3xl font-bold text-black text-center pt-2">
+                Role Selection
+            </h2>
+
+            <div class="my-auto flex flex-col items-center justify-center py-4">
+                <img src="image-removebg-preview.png" alt="SynergyScore Logo" class="w-52 sm:w-60 object-contain drop-shadow-sm" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('alt-logo').classList.remove('hidden');">
+                
+                <div id="alt-logo" class="hidden text-center py-4">
+                    <div class="text-3xl font-extrabold text-blue-600">Synergy<span class="text-[#22c55e]">Score</span></div>
+                    <p class="text-xs text-gray-500 mt-1">จับคู่ทุนที่ใช่ เพื่ออนาคตที่เป็นไปได้</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 w-full pt-2">
+                <button onclick="selectRole('student')" class="flex-1 btn-blue active:scale-[0.98] font-bold py-3.5 px-4 rounded-xl shadow-md text-sm">
+                    Student
+                </button>
+                <button onclick="selectRole('corporate')" class="flex-1 btn-green active:scale-[0.98] font-bold py-3.5 px-4 rounded-xl shadow-md text-sm">
+                    Corporate
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 3: STUDENT REGISTER FORM
+             ========================================== -->
+        <div id="student-register-page" class="app-page hidden bg-white border-2 border-[#0ea5e9] rounded-2xl p-6 shadow-2xl flex-col transition-all">
+            <div class="relative flex items-center justify-center mb-6">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-800 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-2xl font-bold text-black">Student Register</h2>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-3">
+                <div id="student-register-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="student-firstname" class="block text-xs font-semibold text-gray-700 mb-1">First Name</label>
+                    <input type="text" id="student-firstname" name="firstName" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-email" class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="student-email" name="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="student-password" name="password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-confirm-password" class="block text-xs font-semibold text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="student-confirm-password" name="confirmPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="student-university" class="block text-xs font-semibold text-gray-700 mb-1">University</label>
+                        <input type="text" id="student-university" name="university" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                    </div>
+                    <div>
+                        <label for="student-faculty" class="block text-xs font-semibold text-gray-700 mb-1">Faculty</label>
+                        <input type="text" id="student-faculty" name="faculty" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <label for="student-id-card-file" class="inline-block btn-green text-xs font-bold py-2.5 px-4 rounded-lg cursor-pointer active:scale-95 shadow-sm">
+                        <span id="student-file-label">แนบรูปบัตรนศ</span>
+                        <input type="file" id="student-id-card-file" name="idCardFile" accept="image/*" class="hidden" onchange="updateFileName(this, 'student-file-label', 'แนบรูปบัตรนศ')">
+                    </label>
+                </div>
+
+                <div class="pt-6 text-center">
+                    <button type="submit" id="student-register-submit-btn" class="btn-green active:scale-95 font-bold py-2.5 px-10 rounded-lg shadow-md">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 4: CORPORATE REGISTER FORM
+             ========================================== -->
+        <div id="corporate-register-page" class="app-page hidden bg-white border-2 border-[#0ea5e9] rounded-2xl p-6 shadow-2xl flex-col transition-all">
+            <div class="relative flex items-center justify-center mb-6">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-800 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-2xl font-bold text-black">Corporate Register</h2>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-3">
+                <div id="corporate-register-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="corporate-taxid" class="block text-xs font-semibold text-gray-700 mb-1">Tax id.</label>
+                    <input type="text" id="corporate-taxid" name="taxId" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-email" class="block text-xs font-semibold text-gray-700 mb-1">Company Email</label>
+                    <input type="email" id="corporate-email" name="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="corporate-password" name="password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-confirm-password" class="block text-xs font-semibold text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="corporate-confirm-password" name="confirmPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-phone" class="block text-xs font-semibold text-gray-700 mb-1">Company Phone</label>
+                    <input type="tel" id="corporate-phone" name="phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-founded-date" class="block text-xs font-semibold text-gray-700 mb-1">Founded Date</label>
+                    <input type="date" id="corporate-founded-date" name="foundedDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-type" class="block text-xs font-semibold text-gray-700 mb-1">Company Type</label>
+                    <input type="text" id="corporate-type" name="companyType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div class="pt-2">
+                    <label for="corporate-doc-file" class="inline-block btn-green text-xs font-bold py-2.5 px-4 rounded-lg cursor-pointer active:scale-95 shadow-sm">
+                        <span id="corporate-file-label">แนบเอกสารบริษัท</span>
+                        <input type="file" id="corporate-doc-file" name="companyDocFile" class="hidden" onchange="updateFileName(this, 'corporate-file-label', 'แนบเอกสารบริษัท')">
+                    </label>
+                </div>
+
+                <div class="pt-6 text-center">
+                    <button type="submit" id="corporate-register-submit-btn" class="btn-green active:scale-95 font-bold py-2.5 px-10 rounded-lg shadow-md">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 5: VERIFY EMAIL
+             ========================================== -->
+        <div id="verify-email-page" class="app-page hidden bg-white rounded-2xl p-6 sm:p-8 shadow-2xl flex-col justify-between min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Verify Email</h2>
+            </div>
+
+            <div class="my-auto flex flex-col items-center justify-center text-center px-2">
+                <div class="w-24 h-24 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 shadow-inner ring-8 ring-blue-50/50">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Check your email</h3>
+                <p class="text-sm text-gray-500 max-w-xs leading-relaxed mb-8">
+                    We sent a verification link and code to your registered email address.
+                </p>
+
+                <button onclick="navigateTo('enter-code-page')" class="w-full max-w-xs btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Enter verify code
+                </button>
+
+                <p class="text-xs text-gray-400 mt-6">
+                    Didn't receive the email? <a href="#" onclick="handleResendVerificationEmail(event)" class="text-blue-600 font-semibold hover:underline">Resend</a>
+                </p>
+            </div>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 6: ENTER VERIFY CODE
+             ========================================== -->
+        <div id="enter-code-page" class="app-page hidden bg-white rounded-2xl p-6 sm:p-8 shadow-2xl flex-col justify-between min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('verify-email-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Verify Email</h2>
+            </div>
+
+            <form onsubmit="handleVerifySubmit(event)" class="my-auto flex flex-col items-center justify-center text-center w-full">
+                <div class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4 shadow-sm">
+                    <svg class="w-8 h-8 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">Enter verify code</h3>
+                <p class="text-xs text-gray-500 mb-8">Please enter the 6-digit code sent to your email.</p>
+
+                <div id="otp-error" class="hidden w-full max-w-xs bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2 mb-4"></div>
+
+                <div class="flex justify-center gap-2 mb-8 w-full max-w-xs">
+                    <input type="text" id="otp-1" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-2" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-3" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-4" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-5" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-6" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                </div>
+
+                <button type="submit" id="otp-submit-btn" class="w-full max-w-xs btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Confirm & Verify
+                </button>
+
+                <p class="text-xs text-gray-400 mt-6">
+                    Haven't received code? <a href="#" onclick="handleResendOtp(event)" class="text-[#22c55e] font-bold hover:underline">Resend Code</a>
+                </p>
+            </form>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 7: FORGOT / RESET PASSWORD PAGE
+             ========================================== -->
+        <div id="reset-password-page" class="app-page hidden bg-white rounded-2xl p-6 sm:p-8 shadow-2xl flex-col justify-between min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('login-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Forgot Password</h2>
+            </div>
+
+            <form onsubmit="handleResetPasswordSubmit(event)" class="my-auto flex flex-col items-center justify-center text-center w-full max-w-xs mx-auto">
+                <div class="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-6 shadow-sm ring-8 ring-emerald-50/50">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-green-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-[#22c55e] mb-2">Enter email to reset password</h3>
+                <p class="text-xs text-gray-500 mb-6 leading-relaxed">
+                    Please enter your registered email address to receive password reset instructions.
+                </p>
+
+                <div id="reset-password-error" class="hidden w-full bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2 mb-4"></div>
+
+                <div class="w-full mb-6">
+                    <label for="reset-email" class="sr-only">Email</label>
+                    <input type="email" id="reset-email" name="email" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" placeholder="example@email.com" required>
+                </div>
+
+                <button type="submit" id="reset-password-submit-btn" class="w-full btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Confirm
+                </button>
+            </form>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 8: LANDING PAGE
+             ========================================== -->
+        <div id="landing-page" class="app-page hidden bg-gray-100 rounded-2xl shadow-2xl flex-col justify-between h-[640px] overflow-hidden transition-all relative">
+            
+            <!-- Header bar บนสุด -->
+            <div class="bg-white px-5 py-3 flex items-center justify-between border-b shadow-sm z-10">
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Landing Page</h2>
+                <!-- ปุ่มไอคอนแว่นขยายที่มุมขวาบน -> กดแล้วนำทางไปยังหน้า Search & Filter Page Fail -->
+                <button onclick="navigateTo('search-filter-page')" class="text-gray-700 hover:text-[#22c55e] p-1.5 rounded-lg active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ส่วนเนื้อหาหลักแบบเลื่อนได้ (Scrollable Content Area) -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3.5">
+                
+                <!-- 1. Auto-sliding Corporate Recommendation Banner -->
+                <div class="relative w-full rounded-xl overflow-hidden shadow-md bg-white border border-gray-200">
+                    <div id="banner-slider" class="relative h-64 w-full flex transition-transform duration-500 ease-in-out">
+                        
+                        <!-- Banner 1: ทุนคณะวิศวกรรมศาสตร์ -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-b from-red-600 via-stone-900 to-black p-4 text-white flex flex-col justify-between relative">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-yellow-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">ENG+ 1/2569</span>
+                                <span class="text-xs font-bold tracking-widest text-red-300">ENG FACULTY</span>
+                            </div>
+                            <div class="text-center my-auto space-y-1">
+                                <h4 class="text-xs font-bold text-yellow-300 tracking-wider uppercase">กำหนดการ</h4>
+                                <h3 class="text-2xl font-black text-white tracking-tight leading-none">ทุนการศึกษา</h3>
+                                <p class="text-xs text-gray-200 font-medium">คณะวิศวกรรมศาสตร์</p>
+                                
+                                <div class="bg-red-900/80 border border-red-500 rounded-lg p-2 mt-2 text-left space-y-1 text-[10px]">
+                                    <div class="font-bold text-yellow-300">1-15 เม.ย. 2569 : สมัครออนไลน์</div>
+                                    <div class="font-bold text-white">29 พ.ค. 2569 : ประกาศรายชื่อ</div>
+                                    <div class="font-bold text-yellow-300">8-15 มิ.ย. 2569 : ลงทะเบียนเรียน</div>
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-center text-gray-400">เงื่อนไขเป็นไปตามที่คณะฯ กำหนด</div>
+                        </div>
+
+                        <!-- Banner 2: ทุนวิจัยนวัตกรรมเทคโนโลยี -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-br from-blue-700 via-indigo-900 to-slate-950 p-4 text-white flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-blue-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">TECH GRANT</span>
+                                <span class="text-xs font-bold tracking-widest text-blue-200">SYNERGY SCORE</span>
+                            </div>
+                            <div class="text-center my-auto space-y-2">
+                                <h3 class="text-2xl font-black text-cyan-300">ทุนวิจัยและนวัตกรรม</h3>
+                                <p class="text-xs text-gray-200">สนับสนุนโดยบริษัทเทคโนโลยีชั้นนำ</p>
+                                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-2 text-xs font-semibold text-white">
+                                    มูลค่าทุนสูงสุด 100,000 บาท / โครงการ
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-center text-cyan-200">เปิดรับสมัครวันนี้ - 30 มิถุนายน 2569</div>
+                        </div>
+
+                        <!-- Banner 3: ทุนส่งเสริมการศึกษาจาก Corporate -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-tr from-emerald-700 via-teal-900 to-slate-900 p-4 text-white flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-emerald-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">CORPORATE</span>
+                                <span class="text-xs font-bold tracking-widest text-emerald-200">PARTNERSHIP</span>
+                            </div>
+                            <div class="text-center my-auto space-y-2">
+                                <h3 class="text-2xl font-black text-emerald-300">ทุนการศึกษาองค์กร</h3>
+                                <p class="text-xs text-gray-200">พร้อมโอกาสเข้าทำงานหลังสำเร็จการศึกษา</p>
+                                <span class="inline-block bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                                    สมัครได้ทุกสาขาวิชา
+                                </span>
+                            </div>
+                            <div class="text-[9px] text-center text-emerald-200">ติดตามรายละเอียดเพิ่มเติมในแอป</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Indicator Dots สำหรับ Carousel -->
+                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10">
+                        <button onclick="goToSlide(0)" class="banner-dot w-2 h-2 rounded-full bg-white transition-all"></button>
+                        <button onclick="goToSlide(1)" class="banner-dot w-2 h-2 rounded-full bg-white/50 transition-all"></button>
+                        <button onclick="goToSlide(2)" class="banner-dot w-2 h-2 rounded-full bg-white/50 transition-all"></button>
+                    </div>
+                </div>
+
+                <!-- 2. Search Bar พร้อมไอคอนแว่นขยายสำหรับค้นหาทุน (กด Enter เพื่อไปยังหน้าค้นหา) -->
+                <div class="relative">
+                    <input type="text" id="search-scholarship-input" onkeypress="if(event.key === 'Enter') navigateTo('search-filter-page')" placeholder="ค้นหาทุนการศึกษา, คณะ, บริษัท..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent shadow-sm transition">
+                    <button onclick="navigateTo('search-filter-page')" class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 hover:text-[#22c55e] transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 3. List รายการทุนต่างๆ ที่เปิดรับสมัคร -->
+                <div class="space-y-2.5 pt-0.5">
+                    
+                    <!-- Item 1 -->
+                    <div onclick="openGrantDetail('eng-ai-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-red-100 border border-red-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-red-600 font-extrabold text-[10px] text-center leading-tight">ENG<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนวิจัย คณะวิศวกรรม</h4>
+                                <p class="text-[11px] text-gray-500">ศึกษาเพิ่มเติม</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div onclick="openGrantDetail('sci-postdoc-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-blue-600 font-extrabold text-[10px] text-center leading-tight">SCI<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนวิจัย คณะวิทยาศาสตร์ประยุกต์</h4>
+                                <p class="text-[11px] text-gray-500">สำหรับนักวิจัยหลังปริญญาเอก</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div onclick="openGrantDetail('corporate-tuition-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-emerald-600 font-extrabold text-[10px] text-center leading-tight">CORP<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนการศึกษาจากภาคเอกชน</h4>
+                                <p class="text-[11px] text-gray-500">สนับสนุนค่าเทอมตลอดหลักสูตร</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 4. Bottom Navigation Bar ด้านล่างสุด -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="alert('ไปยังหน้าบริษัทผู้ให้ทุน')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="alert('คุณอยู่ที่หน้า Home Dashboard แล้ว')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-blue-700 tracking-tighter uppercase leading-none mt-0.5">HOME DASHBOARD</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 9: SEARCH & FILTER PAGE FAIL (หาทุนไม่เจอ)
+             ========================================== -->
+        <div id="search-filter-page" class="app-page hidden bg-white rounded-2xl shadow-2xl flex-col justify-between h-[640px] overflow-hidden transition-all relative">
+            
+            <!-- Header Bar -->
+            <div class="p-4 flex items-center justify-between border-b border-gray-100">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-xl font-bold text-black tracking-tight flex-1 text-center pr-6">Search & Filter Page</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-4">
+                
+                <!-- Search & Filter Row -->
+                <div class="flex gap-3 items-center">
+                    <div class="relative flex-1">
+                        <input type="text" placeholder="Search" class="w-full pl-9 pr-3 py-2 bg-gray-200/80 rounded-md text-xs text-gray-800 placeholder-gray-500 outline-none focus:ring-1 focus:ring-gray-400">
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <button class="bg-gray-200/90 text-gray-600 hover:text-gray-900 text-xs font-semibold px-3 py-2 rounded-md transition border border-gray-300/50 shadow-sm">
+                        Filter
+                    </button>
+                </div>
+
+                <!-- Section: สถานะ -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">สถานะ:</label>
+                    <div class="flex gap-2">
+                        <button class="bg-[#22c55e] text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            เปิดรับ
+                        </button>
+                        <button class="bg-red-600 text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            ปิดรับ
+                        </button>
+                        <button class="bg-blue-600 text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            พิจารณา
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section: งบประมาณ -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">งบประมาณ</label>
+                    <div class="w-28 h-10 border border-gray-300 rounded-md bg-white"></div>
+                </div>
+
+                <!-- Section: เงื่อนไข IP & Fail Result Box -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">เงื่อนไข IP</label>
+                    
+                    <!-- กล่องแสดงผลเมื่อหาไม่เจอ -->
+                    <div class="w-full bg-gray-200/80 border border-gray-400/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center my-1 shadow-inner">
+                        <!-- Icon โฟลเดอร์/กล่องข้อความว่างเปล่า -->
+                        <div class="w-12 h-10 border-2 border-gray-700 rounded-lg flex flex-col items-center justify-start p-1 bg-gray-100 shadow-sm relative mb-2">
+                            <div class="w-5 h-1 bg-gray-700 rounded-full mb-1"></div>
+                        </div>
+                        <p class="text-xs font-bold text-black">ไม่พบทุนที่ตรงกับเงื่อนไข</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar (ยึดจากหน้า landing page 100%) -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="alert('ไปยังหน้าบริษัทผู้ให้ทุน')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="navigateTo('landing-page')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-blue-700 tracking-tighter uppercase leading-none mt-0.5">HOME DASHBOARD</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 10: GRANT DETAIL PAGE
+             ========================================== -->
+        <div id="grant-detail-page" class="app-page hidden bg-gray-100 rounded-2xl shadow-2xl flex-col justify-between h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-5 py-3 flex items-center gap-3 border-b shadow-sm z-10">
+                <button onclick="navigateTo('landing-page')" class="text-gray-800 hover:text-black p-1 -ml-1 rounded-lg active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Grant Detail Page</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4">
+                <div id="grant-detail-card" class="bg-gray-200/70 border border-gray-300 rounded-2xl p-4 shadow-inner">
+
+                    <!-- ชื่อทุน + สถานะ -->
+                    <div class="flex items-center justify-between border-b border-gray-300 pb-3 mb-4">
+                        <h3 id="grant-detail-title" class="text-sm font-bold text-black">ทุนวิจัยนวัตกรรม AI</h3>
+                        <span id="grant-detail-status" class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">เปิดรับ</span>
+                    </div>
+
+                    <!-- งบประมาณ / หน่วยงาน -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-white border border-gray-300 rounded-xl p-3 shadow-sm">
+                            <p class="text-[11px] font-bold text-gray-500 mb-1">งบประมาณ</p>
+                            <p id="grant-detail-budget" class="text-sm font-bold text-black">500,000 บาท</p>
+                        </div>
+                        <div class="bg-white border border-gray-300 rounded-xl p-3 shadow-sm">
+                            <p class="text-[11px] font-bold text-gray-500 mb-1">หน่วยงาน</p>
+                            <p id="grant-detail-org" class="text-sm font-bold text-black">บริษัท ABC</p>
+                        </div>
+                    </div>
+
+                    <!-- รายละเอียด -->
+                    <div class="mb-5">
+                        <p class="text-xs font-bold text-black mb-2">รายละเอียด</p>
+                        <p id="grant-detail-description" class="text-xs text-gray-700 leading-relaxed">
+                            ทุนสนับสนุนงานวิจัยและพัฒนานวัตกรรมด้านปัญญาประดิษฐ์ (AI) สำหรับนักศึกษาและนักวิจัยที่สนใจต่อยอดผลงานสู่การใช้งานจริง เปิดรับสมัครผู้ที่มีผลงานหรือแนวคิดโครงการที่เกี่ยวข้อง
+                        </p>
+                    </div>
+
+                    <!-- ปุ่มสมัครขอทุน -->
+                    <button onclick="handleApplyGrant()" class="w-full btn-green active:scale-[0.98] font-bold py-3 rounded-xl shadow-md text-sm">
+                        สมัครขอทุน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar (ยึดจากหน้า landing page 100%) -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="alert('ไปยังหน้าบริษัทผู้ให้ทุน')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="navigateTo('landing-page')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-blue-700 tracking-tighter uppercase leading-none mt-0.5">HOME DASHBOARD</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 11: STUDENT DASHBOARD PAGE
+             ========================================== -->
+        <div id="student-dashboard-page" class="app-page hidden bg-gray-100 rounded-2xl shadow-2xl flex-col justify-between h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-5 py-3 flex items-center justify-center border-b shadow-sm z-10">
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Student Dashboard</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3.5">
+
+                <!-- Search -->
+                <div class="relative">
+                    <input type="text" id="student-dashboard-search" oninput="renderStudentProjects()" placeholder="ค้นหาโครงการของคุณ..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent shadow-sm transition">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+                    <button data-filter="all" onclick="setStudentDashboardFilter('all')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">All</button>
+                    <button data-filter="pending" onclick="setStudentDashboardFilter('pending')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Pending</button>
+                    <button data-filter="approved" onclick="setStudentDashboardFilter('approved')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Approved</button>
+                    <button data-filter="ejected" onclick="setStudentDashboardFilter('ejected')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Ejected</button>
+                </div>
+
+                <!-- Welcome -->
+                <div class="pt-1">
+                    <p class="text-sm text-gray-800">Welcome, <span id="student-dashboard-username" class="font-bold">Student</span></p>
+                    <p class="text-xs font-bold text-gray-500 mt-0.5">Your Project Status</p>
+                </div>
+
+                <!-- Project List -->
+                <div id="student-dashboard-project-list" class="space-y-3 pt-0.5"></div>
+
+                <!-- Empty state -->
+                <div id="student-dashboard-empty" class="hidden w-full bg-gray-200/80 border border-gray-400/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-inner">
+                    <div class="w-12 h-10 border-2 border-gray-700 rounded-lg flex flex-col items-center justify-start p-1 bg-gray-100 shadow-sm relative mb-2">
+                        <div class="w-5 h-1 bg-gray-700 rounded-full mb-1"></div>
+                    </div>
+                    <p class="text-xs font-bold text-black">ไม่พบโครงการที่ตรงกับเงื่อนไข</p>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="alert('คุณอยู่ที่หน้า Student Dashboard แล้ว')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm ring-2 ring-sky-500 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="alert('ไปยังหน้าบริษัทผู้ให้ทุน')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="navigateTo('landing-page')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-blue-700 tracking-tighter uppercase leading-none mt-0.5">HOME DASHBOARD</span>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         API LAYER
+         ========================================== -->
+
+    <script src="api.js"></script>
+
+    <!-- ==========================================
+         JAVASCRIPT CONTROLLER
+         ========================================== -->
+    <script>
+        function navigateTo(pageId) {
+            const pages = document.querySelectorAll('.app-page');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('flex');
+            });
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('flex');
+            }
+        }
+
+        /* ---------- UI helpers: loading state & error banners ---------- */
+        function setButtonLoading(button, isLoading, loadingText = 'กำลังดำเนินการ...') {
+            if (!button) return;
+            if (isLoading) {
+                button.dataset.originalText = button.dataset.originalText || button.textContent.trim();
+                button.textContent = loadingText;
+                button.disabled = true;
+                button.classList.add('opacity-60', 'pointer-events-none');
+            } else {
+                button.textContent = button.dataset.originalText || button.textContent;
+                button.disabled = false;
+                button.classList.remove('opacity-60', 'pointer-events-none');
+            }
+        }
+
+        function showFormError(errorBoxId, message) {
+            const box = document.getElementById(errorBoxId);
+            if (!box) return;
+            box.textContent = message;
+            box.classList.remove('hidden');
+        }
+
+        function clearFormError(errorBoxId) {
+            const box = document.getElementById(errorBoxId);
+            if (!box) return;
+            box.textContent = '';
+            box.classList.add('hidden');
+        }
+
+        /* ---------- Handlers ---------- */
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearFormError('login-error');
+
+            const payload = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+
+            const submitBtn = document.getElementById('login-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังเข้าสู่ระบบ...');
+
+            try {
+                await API.login(payload);
+                navigateTo('landing-page');
+            } catch (err) {
+                showFormError('login-error', err.message || 'เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        function selectRole(role) {
+            if (role === 'student') {
+                navigateTo('student-register-page');
+            } else if (role === 'corporate') {
+                navigateTo('corporate-register-page');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const page = event.target.closest('.app-page');
+            const isStudent = page.id === 'student-register-page';
+            const errorBoxId = isStudent ? 'student-register-error' : 'corporate-register-error';
+            const submitBtn = document.getElementById(isStudent ? 'student-register-submit-btn' : 'corporate-register-submit-btn');
+            clearFormError(errorBoxId);
+
+            let payload = null;
+            if (isStudent) {
+                payload = {
+                    role: 'student',
+                    firstName: document.getElementById('student-firstname').value,
+                    email: document.getElementById('student-email').value,
+                    password: document.getElementById('student-password').value,
+                    confirmPassword: document.getElementById('student-confirm-password').value,
+                    university: document.getElementById('student-university').value,
+                    faculty: document.getElementById('student-faculty').value,
+                    idCardFile: document.getElementById('student-id-card-file').files[0] || null
+                };
+            } else {
+                payload = {
+                    role: 'corporate',
+                    taxId: document.getElementById('corporate-taxid').value,
+                    email: document.getElementById('corporate-email').value,
+                    password: document.getElementById('corporate-password').value,
+                    confirmPassword: document.getElementById('corporate-confirm-password').value,
+                    phone: document.getElementById('corporate-phone').value,
+                    foundedDate: document.getElementById('corporate-founded-date').value,
+                    companyType: document.getElementById('corporate-type').value,
+                    companyDocFile: document.getElementById('corporate-doc-file').files[0] || null
+                };
+            }
+
+            if (payload.password !== payload.confirmPassword) {
+                showFormError(errorBoxId, 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+                return;
+            }
+
+            setButtonLoading(submitBtn, true, 'กำลังสมัคร...');
+
+            try {
+                if (isStudent) {
+                    await API.registerStudent(payload);
+                } else {
+                    await API.registerCorporate(payload);
+                }
+                navigateTo('verify-email-page');
+            } catch (err) {
+                showFormError(errorBoxId, err.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleVerifySubmit(event) {
+            event.preventDefault();
+            clearFormError('otp-error');
+
+            const otpCode = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value)
+                .join('');
+
+            const submitBtn = document.getElementById('otp-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังยืนยัน...');
+
+            try {
+                await API.verifyOtp({ code: otpCode });
+                navigateTo('landing-page');
+            } catch (err) {
+                showFormError('otp-error', err.message || 'รหัสยืนยันไม่ถูกต้อง กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleResetPasswordSubmit(event) {
+            event.preventDefault();
+            clearFormError('reset-password-error');
+
+            const payload = {
+                email: document.getElementById('reset-email').value
+            };
+
+            const submitBtn = document.getElementById('reset-password-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังส่ง...');
+
+            try {
+                await API.requestPasswordReset(payload);
+                navigateTo('login-page');
+            } catch (err) {
+                showFormError('reset-password-error', err.message || 'ส่งคำขอไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleResendVerificationEmail(event) {
+            event.preventDefault();
+            try {
+                await API.resendVerificationEmail();
+                alert('ส่งอีเมลยืนยันใหม่อีกครั้งแล้ว');
+            } catch (err) {
+                alert(err.message || 'ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        async function handleResendOtp(event) {
+            event.preventDefault();
+            clearFormError('otp-error');
+            try {
+                await API.resendOtp();
+                alert('ส่งรหัส OTP ใหม่อีกครั้งแล้ว');
+            } catch (err) {
+                showFormError('otp-error', err.message || 'ส่งรหัส OTP ไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        /* ---------- Grant Detail Page ---------- */
+        // TODO: พอมี backend จริง ให้ดึงรายการนี้จาก API (เช่น API.getGrants())
+        // แทนการ hardcode ไว้ในไฟล์ และดึงรายละเอียดทุนตาม id ที่กดจาก API.getGrantById(id)
+        const GRANTS_MOCK = {
+            'eng-ai-grant': {
+                title: 'ทุนวิจัยนวัตกรรม AI',
+                status: 'เปิดรับ',
+                budget: '500,000 บาท',
+                org: 'บริษัท ABC',
+                description: 'ทุนสนับสนุนงานวิจัยและพัฒนานวัตกรรมด้านปัญญาประดิษฐ์ (AI) สำหรับนักศึกษาและนักวิจัยที่สนใจต่อยอดผลงานสู่การใช้งานจริง เปิดรับสมัครผู้ที่มีผลงานหรือแนวคิดโครงการที่เกี่ยวข้อง'
+            },
+            'sci-postdoc-grant': {
+                title: 'ทุนวิจัย คณะวิทยาศาสตร์ประยุกต์',
+                status: 'เปิดรับ',
+                budget: '350,000 บาท',
+                org: 'มหาวิทยาลัย',
+                description: 'ทุนสนับสนุนนักวิจัยหลังปริญญาเอกด้านวิทยาศาสตร์ประยุกต์ เน้นโครงการที่มีศักยภาพต่อยอดเชิงพาณิชย์หรือเชิงนโยบาย'
+            },
+            'corporate-tuition-grant': {
+                title: 'ทุนการศึกษาจากภาคเอกชน',
+                status: 'เปิดรับ',
+                budget: 'สนับสนุนค่าเทอมตลอดหลักสูตร',
+                org: 'ภาคเอกชน (หลายบริษัท)',
+                description: 'ทุนการศึกษาสำหรับนักศึกษาทุกสาขาวิชา สนับสนุนค่าเทอมตลอดหลักสูตร พร้อมโอกาสฝึกงานและร่วมงานกับบริษัทพันธมิตรหลังสำเร็จการศึกษา'
+            }
+        };
+
+        function openGrantDetail(grantId) {
+            const grant = GRANTS_MOCK[grantId];
+            if (!grant) return;
+
+            document.getElementById('grant-detail-card').dataset.grantId = grantId;
+            document.getElementById('grant-detail-title').textContent = grant.title;
+            document.getElementById('grant-detail-status').textContent = grant.status;
+            document.getElementById('grant-detail-budget').textContent = grant.budget;
+            document.getElementById('grant-detail-org').textContent = grant.org;
+            document.getElementById('grant-detail-description').textContent = grant.description;
+
+            navigateTo('grant-detail-page');
+        }
+
+        function handleApplyGrant() {
+            const grantId = document.getElementById('grant-detail-card').dataset.grantId;
+            // TODO: เชื่อม backend จริงตรงนี้ เช่น await API.applyGrant(grantId)
+            console.log('[handleApplyGrant] grantId ready for API:', grantId);
+            alert('ส่งใบสมัครขอทุนเรียบร้อยแล้ว!');
+        }
+
+        /* ---------- Student Dashboard Page ---------- */
+        // TODO: พอมี backend จริง ให้ดึงรายการนี้จาก API (เช่น API.getMyProjects())
+        // แทนการ hardcode ไว้ในไฟล์
+        const STUDENT_PROJECTS_MOCK = [
+            {
+                id: 'proj-1',
+                name: 'ระบบแนะนำทุนการศึกษาด้วย AI',
+                status: 'approved',
+                description: 'พัฒนาโมเดลแนะนำทุนที่เหมาะสมกับโปรไฟล์นักศึกษาแต่ละคนโดยอัตโนมัติ',
+                budget: '120,000 THB'
+            },
+            {
+                id: 'proj-2',
+                name: 'แอปติดตามค่าใช้จ่ายสำหรับนักศึกษา',
+                status: 'pending',
+                description: 'แอปช่วยวางแผนการเงินระหว่างเรียน พร้อมระบบแจ้งเตือนงบประมาณ',
+                budget: '85,000 THB'
+            },
+            {
+                id: 'proj-3',
+                name: 'แพลตฟอร์มแบ่งปันโน้ตเรียนออนไลน์',
+                status: 'ejected',
+                description: 'พื้นที่ให้นักศึกษาแบ่งปันและค้นหาโน้ตสรุปเนื้อหารายวิชา',
+                budget: '60,000 THB'
+            }
+        ];
+
+        const STUDENT_STATUS_META = {
+            approved: { label: 'Approved', badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-emerald-300', iconGradient: 'from-emerald-400 to-teal-600' },
+            pending: { label: 'Pending', badgeClass: 'bg-amber-100 text-amber-700', borderClass: 'border-amber-300', iconGradient: 'from-amber-400 to-orange-500' },
+            ejected: { label: 'Ejected', badgeClass: 'bg-red-100 text-red-700', borderClass: 'border-red-300', iconGradient: 'from-slate-400 to-slate-600' }
+        };
+
+        let studentDashboardFilter = 'all';
+
+        function openStudentDashboard() {
+            studentDashboardFilter = 'all';
+            const searchInput = document.getElementById('student-dashboard-search');
+            if (searchInput) searchInput.value = '';
+            renderStudentProjects();
+            navigateTo('student-dashboard-page');
+        }
+
+        function setStudentDashboardFilter(filter) {
+            studentDashboardFilter = filter;
+            renderStudentProjects();
+        }
+
+        function renderStudentProjects() {
+            // อัปเดตปุ่ม filter ให้ตรงกับสถานะที่เลือกอยู่
+            document.querySelectorAll('.student-dashboard-filter-btn').forEach(btn => {
+                const isActive = btn.dataset.filter === studentDashboardFilter;
+                btn.classList.toggle('bg-blue-600', isActive);
+                btn.classList.toggle('text-white', isActive);
+                btn.classList.toggle('border-blue-600', isActive);
+                btn.classList.toggle('bg-white', !isActive);
+                btn.classList.toggle('text-gray-700', !isActive);
+                btn.classList.toggle('border-gray-300', !isActive);
+            });
+
+            const searchTerm = (document.getElementById('student-dashboard-search').value || '').trim().toLowerCase();
+
+            const filtered = STUDENT_PROJECTS_MOCK.filter(project => {
+                const matchesFilter = studentDashboardFilter === 'all' || project.status === studentDashboardFilter;
+                const matchesSearch = !searchTerm || project.name.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm);
+                return matchesFilter && matchesSearch;
+            });
+
+            const listEl = document.getElementById('student-dashboard-project-list');
+            const emptyEl = document.getElementById('student-dashboard-empty');
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            listEl.innerHTML = filtered.map(project => {
+                const meta = STUDENT_STATUS_META[project.status];
+                const proposalButton = project.status === 'ejected'
+                    ? `<button onclick="handleSubmitNewProposal('${project.id}')" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition">Submit a new proposal</button>`
+                    : '';
+
+                return `
+                    <div class="bg-white rounded-2xl p-3 shadow-sm border-2 ${meta.borderClass} flex gap-3">
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br ${meta.iconGradient} shrink-0 shadow-sm"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <p class="text-xs font-bold text-gray-900 leading-snug">Project : ${project.name}</p>
+                            </div>
+                            <p class="text-[11px] mt-0.5">
+                                <span class="text-gray-500">Status : </span>
+                                <span class="${meta.badgeClass} font-semibold px-2 py-0.5 rounded-full">${meta.label}</span>
+                            </p>
+                            <p class="text-[11px] text-gray-500 mt-1 line-clamp-2">Description : ${project.description}</p>
+                            <p class="text-[11px] text-gray-700 font-semibold mt-1">Budget : ${project.budget}</p>
+                            ${proposalButton}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleSubmitNewProposal(projectId) {
+            // TODO: เชื่อม backend จริงตรงนี้ เช่น navigate ไปหน้าแบบฟอร์มส่งข้อเสนอใหม่ หรือ await API.submitProposal(projectId)
+            console.log('[handleSubmitNewProposal] projectId ready for API:', projectId);
+            alert('ไปยังหน้าสำหรับส่งข้อเสนอโครงการใหม่');
+        }
+
+        function updateFileName(input, labelId, defaultText) {
+            const label = document.getElementById(labelId);
+            if (input.files && input.files[0]) {
+                label.textContent = "✓ " + input.files[0].name.substring(0, 15) + "...";
+            } else {
+                label.textContent = defaultText;
+            }
+        }
+
+        /* Auto-Slide Banner Carousel Controller */
+        let currentSlideIndex = 0;
+        const totalSlides = 3;
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            const slider = document.getElementById('banner-slider');
+            const dots = document.querySelectorAll('.banner-dot');
+            
+            if (slider) {
+                slider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+            }
+
+            dots.forEach((dot, i) => {
+                if (i === currentSlideIndex) {
+                    dot.classList.remove('bg-white/50');
+                    dot.classList.add('bg-white', 'w-4');
+                } else {
+                    dot.classList.remove('bg-white', 'w-4');
+                    dot.classList.add('bg-white/50', 'w-2');
+                }
+            });
+        }
+
+        setInterval(() => {
+            const landingPage = document.getElementById('landing-page');
+            if (landingPage && !landingPage.classList.contains('hidden')) {
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                goToSlide(currentSlideIndex);
+            }
+        }, 3500);
+
+        /* OTP Auto Tab Focus */
+        document.addEventListener('DOMContentLoaded', () => {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            renderStudentProjects();
+        });
+    </script>
+</body>
+</html>
