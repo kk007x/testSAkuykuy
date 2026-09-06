@@ -1,0 +1,2506 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SynergyScore Mobile App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* สไตล์กำหนดสีปุ่มแบบโปร่งแสง 85% และสว่าง 100% เมื่อชี้ (Hover) */
+        .btn-green {
+            background-color: rgba(34, 197, 94, 0.85) !important;
+            color: #ffffff !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-green:hover, .btn-green:active {
+            background-color: rgba(34, 197, 94, 1.0) !important;
+        }
+
+        .btn-blue {
+            background-color: rgba(37, 99, 235, 0.85) !important;
+            color: #ffffff !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-blue:hover, .btn-blue:active {
+            background-color: rgba(37, 99, 235, 1.0) !important;
+        }
+
+        .btn-social {
+            background-color: rgba(243, 244, 246, 0.85) !important;
+            border: 1px solid #d1d5db;
+            color: #374151 !important;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-social:hover, .btn-social:active {
+            background-color: rgba(229, 231, 235, 1.0) !important;
+        }
+
+        /* ล้างค่าความกว้างและสไตล์เดิมของ input[type="date"] บน iOS/Android */
+        input[type="date"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            display: block;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            min-height: 42px;
+            background-color: #ffffff;
+        }
+        input[type="date"]::-webkit-date-and-time-value {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ซ่อน Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-white sm:bg-[#1f2022] min-h-[100dvh] sm:min-h-screen sm:flex sm:items-center sm:justify-center sm:p-4 font-sans text-gray-900">
+
+    <!-- Container หลัก -->
+    <!-- มือถือ (<640px): เต็มจอ ไม่มีกรอบ/เงา — เป็นแอปจริง ไม่ใช่การ์ดลอย -->
+    <!-- sm ขึ้นไป: แสดงเป็นการ์ดจำลองหน้าจอมือถือลอยกลางจอ (ใช้พรีวิวบนแท็บเล็ต/เดสก์ท็อป) -->
+    <div class="w-full sm:max-w-md sm:mx-auto">
+        
+        <!-- ==========================================
+             PAGE 1: LOGIN PAGE
+             ========================================== -->
+        <div id="login-page" class="app-page bg-white rounded-none sm:rounded-2xl p-6 sm:p-8 shadow-none sm:shadow-2xl flex flex-col justify-between min-h-[100dvh] sm:min-h-[580px] transition-all">
+            <div class="text-center pt-2 mb-6">
+                <h1 class="text-3xl font-extrabold text-[#22c55e] tracking-tight">SynergyScore</h1>
+                <h2 class="text-3xl font-bold text-black mt-1">Sign In</h2>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4 my-auto">
+                <div id="login-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="login-email" class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="login-email" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" required>
+                </div>
+
+                <div>
+                    <label for="login-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-password" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" required>
+                </div>
+
+                <div class="text-right">
+                    <a href="#" onclick="event.preventDefault(); navigateTo('reset-password-page')" class="text-xs text-blue-500 hover:text-blue-700 font-medium">Reset Password ?</a>
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="w-full btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md">
+                    Login
+                </button>
+
+                <div class="text-center my-3">
+                    <span class="text-xs text-gray-400 font-medium">Or Continue With</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">Google</button>
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">Microsoft</button>
+                    <button type="button" class="btn-social flex items-center justify-center rounded-xl py-2.5 text-xs font-semibold">LinkedIn</button>
+                </div>
+            </form>
+
+            <div class="text-center text-xs pt-4">
+                <span class="text-gray-600">Don’t have an account?</span>
+                <a href="#" onclick="event.preventDefault(); navigateTo('role-page')" class="text-[#22c55e] font-bold ml-1 cursor-pointer">Create New Account</a>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 2: ROLE SELECTION PAGE
+             ========================================== -->
+        <div id="role-page" class="app-page hidden bg-white border-0 sm:border-2 border-[#0ea5e9] rounded-none sm:rounded-2xl p-6 sm:p-8 shadow-none sm:shadow-2xl flex-col justify-between min-h-[100dvh] sm:min-h-[580px] transition-all">
+            <h2 class="text-3xl font-bold text-black text-center pt-2">
+                Role Selection
+            </h2>
+
+            <div class="my-auto flex flex-col items-center justify-center py-4">
+                <img src="logo.png" alt="SynergyScore Logo" class="w-52 sm:w-60 object-contain drop-shadow-sm" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('alt-logo').classList.remove('hidden');">
+                
+                <div id="alt-logo" class="hidden text-center py-4">
+                    <div class="text-3xl font-extrabold text-blue-600">Synergy<span class="text-[#22c55e]">Score</span></div>
+                    <p class="text-xs text-gray-500 mt-1">จับคู่ทุนที่ใช่ เพื่ออนาคตที่เป็นไปได้</p>
+                </div>
+            </div>
+
+            <div class="flex gap-4 w-full pt-2">
+                <button onclick="selectRole('student')" class="flex-1 btn-blue active:scale-[0.98] font-bold py-3.5 px-4 rounded-xl shadow-md text-sm">
+                    Student
+                </button>
+                <button onclick="selectRole('corporate')" class="flex-1 btn-green active:scale-[0.98] font-bold py-3.5 px-4 rounded-xl shadow-md text-sm">
+                    Corporate
+                </button>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 3: STUDENT REGISTER FORM
+             ========================================== -->
+        <div id="student-register-page" class="app-page hidden bg-white border-0 sm:border-2 border-[#0ea5e9] rounded-none sm:rounded-2xl p-6 shadow-none sm:shadow-2xl flex-col min-h-[100dvh] sm:min-h-0 transition-all">
+            <div class="relative flex items-center justify-center mb-6">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-800 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-2xl font-bold text-black">Student Register</h2>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-3">
+                <div id="student-register-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="student-firstname" class="block text-xs font-semibold text-gray-700 mb-1">First Name</label>
+                    <input type="text" id="student-firstname" name="firstName" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-email" class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
+                    <input type="email" id="student-email" name="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="student-password" name="password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="student-confirm-password" class="block text-xs font-semibold text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="student-confirm-password" name="confirmPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label for="student-university" class="block text-xs font-semibold text-gray-700 mb-1">University</label>
+                        <input type="text" id="student-university" name="university" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                    </div>
+                    <div>
+                        <label for="student-faculty" class="block text-xs font-semibold text-gray-700 mb-1">Faculty</label>
+                        <input type="text" id="student-faculty" name="faculty" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <label for="student-id-card-file" class="inline-block btn-green text-xs font-bold py-2.5 px-4 rounded-lg cursor-pointer active:scale-95 shadow-sm">
+                        <span id="student-file-label">แนบรูปบัตรนศ</span>
+                        <input type="file" id="student-id-card-file" name="idCardFile" accept="image/*" class="hidden" onchange="updateFileName(this, 'student-file-label', 'แนบรูปบัตรนศ')">
+                    </label>
+                </div>
+
+                <div class="pt-6 text-center">
+                    <button type="submit" id="student-register-submit-btn" class="btn-green active:scale-95 font-bold py-2.5 px-10 rounded-lg shadow-md">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 4: CORPORATE REGISTER FORM
+             ========================================== -->
+        <div id="corporate-register-page" class="app-page hidden bg-white border-0 sm:border-2 border-[#0ea5e9] rounded-none sm:rounded-2xl p-6 shadow-none sm:shadow-2xl flex-col min-h-[100dvh] sm:min-h-0 transition-all">
+            <div class="relative flex items-center justify-center mb-6">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-800 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-2xl font-bold text-black">Corporate Register</h2>
+            </div>
+
+            <form onsubmit="handleRegister(event)" class="space-y-3">
+                <div id="corporate-register-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                <div>
+                    <label for="corporate-taxid" class="block text-xs font-semibold text-gray-700 mb-1">Tax id.</label>
+                    <input type="text" id="corporate-taxid" name="taxId" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-email" class="block text-xs font-semibold text-gray-700 mb-1">Company Email</label>
+                    <input type="email" id="corporate-email" name="email" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-password" class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="corporate-password" name="password" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-confirm-password" class="block text-xs font-semibold text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="corporate-confirm-password" name="confirmPassword" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-phone" class="block text-xs font-semibold text-gray-700 mb-1">Company Phone</label>
+                    <input type="tel" id="corporate-phone" name="phone" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-founded-date" class="block text-xs font-semibold text-gray-700 mb-1">Founded Date</label>
+                    <input type="date" id="corporate-founded-date" name="foundedDate" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div>
+                    <label for="corporate-type" class="block text-xs font-semibold text-gray-700 mb-1">Company Type</label>
+                    <input type="text" id="corporate-type" name="companyType" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 outline-none focus:border-[#22c55e]" required>
+                </div>
+
+                <div class="pt-2">
+                    <label for="corporate-doc-file" class="inline-block btn-green text-xs font-bold py-2.5 px-4 rounded-lg cursor-pointer active:scale-95 shadow-sm">
+                        <span id="corporate-file-label">แนบเอกสารบริษัท</span>
+                        <input type="file" id="corporate-doc-file" name="companyDocFile" class="hidden" onchange="updateFileName(this, 'corporate-file-label', 'แนบเอกสารบริษัท')">
+                    </label>
+                </div>
+
+                <div class="pt-6 text-center">
+                    <button type="submit" id="corporate-register-submit-btn" class="btn-green active:scale-95 font-bold py-2.5 px-10 rounded-lg shadow-md">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 5: VERIFY EMAIL
+             ========================================== -->
+        <div id="verify-email-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl p-6 sm:p-8 shadow-none sm:shadow-2xl flex-col justify-between min-h-[100dvh] sm:min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('role-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Verify Email</h2>
+            </div>
+
+            <div class="my-auto flex flex-col items-center justify-center text-center px-2">
+                <div class="w-24 h-24 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-6 shadow-inner ring-8 ring-blue-50/50">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-sky-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Check your email</h3>
+                <p class="text-sm text-gray-500 max-w-xs leading-relaxed mb-8">
+                    We sent a verification link and code to your registered email address.
+                </p>
+
+                <button onclick="navigateTo('enter-code-page')" class="w-full max-w-xs btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Enter verify code
+                </button>
+
+                <p class="text-xs text-gray-400 mt-6">
+                    Didn't receive the email? <a href="#" onclick="handleResendVerificationEmail(event)" class="text-blue-600 font-semibold hover:underline">Resend</a>
+                </p>
+            </div>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 6: ENTER VERIFY CODE
+             ========================================== -->
+        <div id="enter-code-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl p-6 sm:p-8 shadow-none sm:shadow-2xl flex-col justify-between min-h-[100dvh] sm:min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('verify-email-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Verify Email</h2>
+            </div>
+
+            <form onsubmit="handleVerifySubmit(event)" class="my-auto flex flex-col items-center justify-center text-center w-full">
+                <div class="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4 shadow-sm">
+                    <svg class="w-8 h-8 text-[#22c55e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">Enter verify code</h3>
+                <p class="text-xs text-gray-500 mb-8">Please enter the 6-digit code sent to your email.</p>
+
+                <div id="otp-error" class="hidden w-full max-w-xs bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2 mb-4"></div>
+
+                <div class="flex justify-center gap-2 mb-8 w-full max-w-xs">
+                    <input type="text" id="otp-1" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-2" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-3" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-4" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-5" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                    <input type="text" id="otp-6" maxlength="1" class="otp-input w-11 h-12 text-center text-xl font-bold text-gray-800 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:border-[#22c55e] focus:ring-2 focus:ring-[#22c55e]/20 outline-none transition" required>
+                </div>
+
+                <button type="submit" id="otp-submit-btn" class="w-full max-w-xs btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Confirm & Verify
+                </button>
+
+                <p class="text-xs text-gray-400 mt-6">
+                    Haven't received code? <a href="#" onclick="handleResendOtp(event)" class="text-[#22c55e] font-bold hover:underline">Resend Code</a>
+                </p>
+            </form>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 7: FORGOT / RESET PASSWORD PAGE
+             ========================================== -->
+        <div id="reset-password-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl p-6 sm:p-8 shadow-none sm:shadow-2xl flex-col justify-between min-h-[100dvh] sm:min-h-[580px] transition-all">
+            <div class="relative flex items-center justify-center pt-2">
+                <button onclick="navigateTo('login-page')" class="absolute left-0 p-1 text-gray-400 hover:text-gray-700 active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Forgot Password</h2>
+            </div>
+
+            <form onsubmit="handleResetPasswordSubmit(event)" class="my-auto flex flex-col items-center justify-center text-center w-full max-w-xs mx-auto">
+                <div class="w-20 h-20 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-6 shadow-sm ring-8 ring-emerald-50/50">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 to-green-400 flex items-center justify-center shadow-md shadow-emerald-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-[#22c55e] mb-2">Enter email to reset password</h3>
+                <p class="text-xs text-gray-500 mb-6 leading-relaxed">
+                    Please enter your registered email address to receive password reset instructions.
+                </p>
+
+                <div id="reset-password-error" class="hidden w-full bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2 mb-4"></div>
+
+                <div class="w-full mb-6">
+                    <label for="reset-email" class="sr-only">Email</label>
+                    <input type="email" id="reset-email" name="email" class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent transition" placeholder="example@email.com" required>
+                </div>
+
+                <button type="submit" id="reset-password-submit-btn" class="w-full btn-green active:scale-[0.98] font-bold py-3.5 rounded-xl shadow-md text-sm tracking-wide">
+                    Confirm
+                </button>
+            </form>
+
+            <div class="pb-2"></div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 8: LANDING PAGE
+             ========================================== -->
+        <div id="landing-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+            
+            <!-- Header bar บนสุด -->
+            <div class="bg-white px-5 py-3 flex items-center justify-between border-b shadow-sm z-10">
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Landing Page</h2>
+                <!-- ปุ่มไอคอนแว่นขยายที่มุมขวาบน -> กดแล้วนำทางไปยังหน้า Search & Filter Page Fail -->
+                <button onclick="navigateTo('search-filter-page')" class="text-gray-700 hover:text-[#22c55e] p-1.5 rounded-lg active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ส่วนเนื้อหาหลักแบบเลื่อนได้ (Scrollable Content Area) -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3.5">
+                
+                <!-- 1. Auto-sliding Corporate Recommendation Banner -->
+                <div class="relative w-full rounded-xl overflow-hidden shadow-md bg-white border border-gray-200">
+                    <div id="banner-slider" class="relative h-56 sm:h-64 w-full flex transition-transform duration-500 ease-in-out">
+                        
+                        <!-- Banner 1: ทุนคณะวิศวกรรมศาสตร์ -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-b from-red-600 via-stone-900 to-black p-4 text-white flex flex-col justify-between relative">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-yellow-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">ENG+ 1/2569</span>
+                                <span class="text-xs font-bold tracking-widest text-red-300">ENG FACULTY</span>
+                            </div>
+                            <div class="text-center my-auto space-y-1">
+                                <h4 class="text-xs font-bold text-yellow-300 tracking-wider uppercase">กำหนดการ</h4>
+                                <h3 class="text-2xl font-black text-white tracking-tight leading-none">ทุนการศึกษา</h3>
+                                <p class="text-xs text-gray-200 font-medium">คณะวิศวกรรมศาสตร์</p>
+                                
+                                <div class="bg-red-900/80 border border-red-500 rounded-lg p-2 mt-2 text-left space-y-1 text-[10px]">
+                                    <div class="font-bold text-yellow-300">1-15 เม.ย. 2569 : สมัครออนไลน์</div>
+                                    <div class="font-bold text-white">29 พ.ค. 2569 : ประกาศรายชื่อ</div>
+                                    <div class="font-bold text-yellow-300">8-15 มิ.ย. 2569 : ลงทะเบียนเรียน</div>
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-center text-gray-400">เงื่อนไขเป็นไปตามที่คณะฯ กำหนด</div>
+                        </div>
+
+                        <!-- Banner 2: ทุนวิจัยนวัตกรรมเทคโนโลยี -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-br from-blue-700 via-indigo-900 to-slate-950 p-4 text-white flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-blue-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">TECH GRANT</span>
+                                <span class="text-xs font-bold tracking-widest text-blue-200">SYNERGY SCORE</span>
+                            </div>
+                            <div class="text-center my-auto space-y-2">
+                                <h3 class="text-2xl font-black text-cyan-300">ทุนวิจัยและนวัตกรรม</h3>
+                                <p class="text-xs text-gray-200">สนับสนุนโดยบริษัทเทคโนโลยีชั้นนำ</p>
+                                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-2 text-xs font-semibold text-white">
+                                    มูลค่าทุนสูงสุด 100,000 บาท / โครงการ
+                                </div>
+                            </div>
+                            <div class="text-[9px] text-center text-cyan-200">เปิดรับสมัครวันนี้ - 30 มิถุนายน 2569</div>
+                        </div>
+
+                        <!-- Banner 3: ทุนส่งเสริมการศึกษาจาก Corporate -->
+                        <div class="banner-item min-w-full h-full bg-gradient-to-tr from-emerald-700 via-teal-900 to-slate-900 p-4 text-white flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-emerald-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow">CORPORATE</span>
+                                <span class="text-xs font-bold tracking-widest text-emerald-200">PARTNERSHIP</span>
+                            </div>
+                            <div class="text-center my-auto space-y-2">
+                                <h3 class="text-2xl font-black text-emerald-300">ทุนการศึกษาองค์กร</h3>
+                                <p class="text-xs text-gray-200">พร้อมโอกาสเข้าทำงานหลังสำเร็จการศึกษา</p>
+                                <span class="inline-block bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                                    สมัครได้ทุกสาขาวิชา
+                                </span>
+                            </div>
+                            <div class="text-[9px] text-center text-emerald-200">ติดตามรายละเอียดเพิ่มเติมในแอป</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Indicator Dots สำหรับ Carousel -->
+                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10">
+                        <button onclick="goToSlide(0)" class="banner-dot w-2 h-2 rounded-full bg-white transition-all"></button>
+                        <button onclick="goToSlide(1)" class="banner-dot w-2 h-2 rounded-full bg-white/50 transition-all"></button>
+                        <button onclick="goToSlide(2)" class="banner-dot w-2 h-2 rounded-full bg-white/50 transition-all"></button>
+                    </div>
+                </div>
+
+                <!-- 2. Search Bar พร้อมไอคอนแว่นขยายสำหรับค้นหาทุน (กด Enter เพื่อไปยังหน้าค้นหา) -->
+                <div class="relative">
+                    <input type="text" id="search-scholarship-input" onkeypress="if(event.key === 'Enter') navigateTo('search-filter-page')" placeholder="ค้นหาทุนการศึกษา, คณะ, บริษัท..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent shadow-sm transition">
+                    <button onclick="navigateTo('search-filter-page')" class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 hover:text-[#22c55e] transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 3. List รายการทุนต่างๆ ที่เปิดรับสมัคร -->
+                <div class="space-y-2.5 pt-0.5">
+                    
+                    <!-- Item 1 -->
+                    <div onclick="openGrantDetail('eng-ai-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-red-100 border border-red-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-red-600 font-extrabold text-[10px] text-center leading-tight">ENG<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนวิจัย คณะวิศวกรรม</h4>
+                                <p class="text-[11px] text-gray-500">ศึกษาเพิ่มเติม</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div onclick="openGrantDetail('sci-postdoc-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-blue-600 font-extrabold text-[10px] text-center leading-tight">SCI<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนวิจัย คณะวิทยาศาสตร์ประยุกต์</h4>
+                                <p class="text-[11px] text-gray-500">สำหรับนักวิจัยหลังปริญญาเอก</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div onclick="openGrantDetail('corporate-tuition-grant')" class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 flex items-center justify-between hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0 overflow-hidden">
+                                <span class="text-emerald-600 font-extrabold text-[10px] text-center leading-tight">CORP<br>GRANT</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-gray-900">ทุนการศึกษาจากภาคเอกชน</h4>
+                                <p class="text-[11px] text-gray-500">สนับสนุนค่าเทอมตลอดหลักสูตร</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">
+                            เปิดรับสมัคร
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 4. Bottom Navigation Bar ด้านล่างสุด -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 9: SEARCH & FILTER PAGE FAIL (หาทุนไม่เจอ)
+             ========================================== -->
+        <div id="search-filter-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+            
+            <!-- Header Bar -->
+            <div class="p-4 flex items-center justify-between border-b border-gray-100">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-xl font-bold text-black tracking-tight flex-1 text-center pr-6">Search & Filter Page</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-5 space-y-4">
+                
+                <!-- Search & Filter Row -->
+                <div class="flex gap-3 items-center">
+                    <div class="relative flex-1">
+                        <input type="text" placeholder="Search" class="w-full pl-9 pr-3 py-2 bg-gray-200/80 rounded-md text-xs text-gray-800 placeholder-gray-500 outline-none focus:ring-1 focus:ring-gray-400">
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <button class="bg-gray-200/90 text-gray-600 hover:text-gray-900 text-xs font-semibold px-3 py-2 rounded-md transition border border-gray-300/50 shadow-sm">
+                        Filter
+                    </button>
+                </div>
+
+                <!-- Section: สถานะ -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">สถานะ:</label>
+                    <div class="flex gap-2">
+                        <button class="bg-[#22c55e] text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            เปิดรับ
+                        </button>
+                        <button class="bg-red-600 text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            ปิดรับ
+                        </button>
+                        <button class="bg-blue-600 text-white text-xs font-semibold px-4 py-1.5 rounded-md active:scale-95 transition shadow-sm">
+                            พิจารณา
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section: งบประมาณ -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">งบประมาณ</label>
+                    <div class="w-28 h-10 border border-gray-300 rounded-md bg-white"></div>
+                </div>
+
+                <!-- Section: เงื่อนไข IP & Fail Result Box -->
+                <div>
+                    <label class="block text-xs font-bold text-black mb-2">เงื่อนไข IP</label>
+                    
+                    <!-- กล่องแสดงผลเมื่อหาไม่เจอ -->
+                    <div class="w-full bg-gray-200/80 border border-gray-400/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center my-1 shadow-inner">
+                        <!-- Icon โฟลเดอร์/กล่องข้อความว่างเปล่า -->
+                        <div class="w-12 h-10 border-2 border-gray-700 rounded-lg flex flex-col items-center justify-start p-1 bg-gray-100 shadow-sm relative mb-2">
+                            <div class="w-5 h-1 bg-gray-700 rounded-full mb-1"></div>
+                        </div>
+                        <p class="text-xs font-bold text-black">ไม่พบทุนที่ตรงกับเงื่อนไข</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar (ยึดจากหน้า landing page 100%) -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 10: GRANT DETAIL PAGE
+             ========================================== -->
+        <div id="grant-detail-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-5 py-3 flex items-center gap-3 border-b shadow-sm z-10">
+                <button onclick="navigateTo('landing-page')" class="text-gray-800 hover:text-black p-1 -ml-1 rounded-lg active:scale-90 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Grant Detail Page</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4">
+                <div id="grant-detail-card" class="bg-gray-200/70 border border-gray-300 rounded-2xl p-4 shadow-inner">
+
+                    <!-- ชื่อทุน + สถานะ -->
+                    <div class="flex items-center justify-between border-b border-gray-300 pb-3 mb-4">
+                        <h3 id="grant-detail-title" class="text-sm font-bold text-black">ทุนวิจัยนวัตกรรม AI</h3>
+                        <span id="grant-detail-status" class="bg-emerald-100 text-emerald-700 text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0">เปิดรับ</span>
+                    </div>
+
+                    <!-- งบประมาณ / หน่วยงาน -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-white border border-gray-300 rounded-xl p-3 shadow-sm">
+                            <p class="text-[11px] font-bold text-gray-500 mb-1">งบประมาณ</p>
+                            <p id="grant-detail-budget" class="text-sm font-bold text-black">500,000 บาท</p>
+                        </div>
+                        <div class="bg-white border border-gray-300 rounded-xl p-3 shadow-sm">
+                            <p class="text-[11px] font-bold text-gray-500 mb-1">หน่วยงาน</p>
+                            <p id="grant-detail-org" class="text-sm font-bold text-black">บริษัท ABC</p>
+                        </div>
+                    </div>
+
+                    <!-- รายละเอียด -->
+                    <div class="mb-5">
+                        <p class="text-xs font-bold text-black mb-2">รายละเอียด</p>
+                        <p id="grant-detail-description" class="text-xs text-gray-700 leading-relaxed">
+                            ทุนสนับสนุนงานวิจัยและพัฒนานวัตกรรมด้านปัญญาประดิษฐ์ (AI) สำหรับนักศึกษาและนักวิจัยที่สนใจต่อยอดผลงานสู่การใช้งานจริง เปิดรับสมัครผู้ที่มีผลงานหรือแนวคิดโครงการที่เกี่ยวข้อง
+                        </p>
+                    </div>
+
+                    <!-- ปุ่มสมัครขอทุน -->
+                    <button onclick="handleApplyGrant(event)" class="w-full btn-green active:scale-[0.98] font-bold py-3 rounded-xl shadow-md text-sm">
+                        สมัครขอทุน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar (ยึดจากหน้า landing page 100%) -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 11: STUDENT DASHBOARD PAGE
+             ========================================== -->
+        <div id="student-dashboard-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-5 py-3 flex items-center gap-3 border-b shadow-sm z-10">
+                <button onclick="navigateTo('landing-page')" class="text-gray-800 hover:text-black p-1 -ml-1 rounded-lg active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-xl font-extrabold text-gray-800 tracking-tight">Student Dashboard</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3.5">
+
+                <!-- Search -->
+                <div class="relative">
+                    <input type="text" id="student-dashboard-search" readonly onclick="openProposalWebform()" placeholder="Search" class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent shadow-sm transition cursor-pointer">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 pointer-events-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+                    <button data-filter="all" onclick="setStudentDashboardFilter('all')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">All</button>
+                    <button data-filter="pending" onclick="setStudentDashboardFilter('pending')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Pending</button>
+                    <button data-filter="approved" onclick="setStudentDashboardFilter('approved')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Approved</button>
+                    <button data-filter="ejected" onclick="setStudentDashboardFilter('ejected')" class="student-dashboard-filter-btn shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border transition active:scale-95">Ejected</button>
+                    <button onclick="openProjectTracking()" class="shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-blue-600 bg-blue-600 text-white transition active:scale-95">Tracking</button>
+                </div>
+
+                <!-- Welcome -->
+                <div class="pt-1">
+                    <p class="text-sm text-gray-800">Welcome, <span id="student-dashboard-username" class="font-bold">Student</span></p>
+                    <p class="text-xs font-bold text-gray-500 mt-0.5">Your Project Status</p>
+                </div>
+
+                <!-- Project List -->
+                <div id="student-dashboard-project-list" class="space-y-3 pt-0.5"></div>
+
+                <!-- Empty state -->
+                <div id="student-dashboard-empty" class="hidden w-full bg-gray-200/80 border border-gray-400/80 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-inner">
+                    <div class="w-12 h-10 border-2 border-gray-700 rounded-lg flex flex-col items-center justify-start p-1 bg-gray-100 shadow-sm relative mb-2">
+                        <div class="w-5 h-1 bg-gray-700 rounded-full mb-1"></div>
+                    </div>
+                    <p class="text-xs font-bold text-black">ไม่พบโครงการที่ตรงกับเงื่อนไข</p>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="alert('คุณอยู่ที่หน้า Student Dashboard แล้ว')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm ring-2 ring-sky-500 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 12: MANAGEMENT / VERIFICATION CONSOLE PAGE
+             ========================================== -->
+        <div id="management-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-b shadow-sm z-10">
+                <button onclick="openEscrowDisputeDashboard()" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="เมนู / Escrow &amp; Dispute Dashboard">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-800 tracking-tight">Verification Console</h2>
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+
+                <!-- Stat Cards: Pending / Approved / Ejected -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div class="bg-white border-2 border-gray-800 rounded-2xl py-3 text-center shadow-sm">
+                        <p class="text-xs font-semibold text-gray-700">Pending</p>
+                        <p id="management-count-pending" class="text-xl font-black text-gray-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white border-2 border-gray-800 rounded-2xl py-3 text-center shadow-sm">
+                        <p class="text-xs font-semibold text-gray-700">Approved</p>
+                        <p id="management-count-approved" class="text-xl font-black text-gray-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white border-2 border-gray-800 rounded-2xl py-3 text-center shadow-sm">
+                        <p class="text-xs font-semibold text-gray-700">Ejected</p>
+                        <p id="management-count-ejected" class="text-xl font-black text-gray-900 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Project List (verify / approve / reject) -->
+                <div id="management-project-list" class="space-y-3"></div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="alert('คุณอยู่ที่หน้า Management แล้ว')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm ring-2 ring-indigo-500 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 13: CORPORATE DASHBOARD PAGE
+             ========================================== -->
+        <div id="corporate-dashboard-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-b shadow-sm z-10">
+                <div class="flex items-center gap-2">
+                    <img src="logocorp.png" alt="Corporate Logo" class="h-8 w-auto object-contain shrink-0" onerror="this.onerror=null; this.classList.add('hidden'); document.getElementById('corp-logo-fallback').classList.remove('hidden');">
+                    <div id="corp-logo-fallback" class="hidden w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 via-emerald-400 to-teal-500 flex items-center justify-center text-white font-black text-sm shadow-sm shrink-0">S</div>
+                    <span class="text-base font-extrabold tracking-tight whitespace-nowrap"><span class="text-blue-600">Synergy</span> <span class="text-[#22c55e]">Score</span></span>
+                </div>
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-700 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3.5">
+
+                <!-- Welcome -->
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <p class="text-base font-bold text-gray-900">Welcome!</p>
+                        <p class="text-xs text-gray-500 mt-0.5">ภาพรวมโครงการและการสมัครทุน</p>
+                    </div>
+                    <button onclick="openChatContactRoom()" class="w-9 h-9 rounded-xl bg-white border border-gray-300 shadow-sm flex items-center justify-center text-gray-500 active:scale-90 transition shrink-0" aria-label="เปิดแชท">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center mb-2">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <p class="text-[11px] font-semibold text-gray-500 leading-snug">งบประมาณรวมทั้งหมด</p>
+                        <p id="corporate-total-budget" class="text-lg font-black text-gray-900 mt-1">-</p>
+                        <p id="corporate-grants-count" class="text-[10px] text-gray-400 mt-0.5">-</p>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-2">
+                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <p class="text-[11px] font-semibold text-gray-500 leading-snug">ทุนที่เปิดรับอยู่</p>
+                        <p id="corporate-active-grants" class="text-lg font-black text-gray-900 mt-1">-</p>
+                        <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">Active</p>
+                    </div>
+                </div>
+
+                <!-- Budget Usage -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+                        <p class="text-[11px] font-semibold text-gray-600 leading-snug">งบประมาณที่ใช้ไปแล้ว</p>
+                        <p id="corporate-budget-used" class="text-base font-black text-gray-900 mt-1">-</p>
+                        <p id="corporate-budget-used-percent-label" class="text-[10px] text-gray-400 mt-1">-</p>
+                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-2 overflow-hidden">
+                            <div id="corporate-budget-used-bar" class="h-full bg-indigo-600 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl p-3 shadow-sm">
+                        <p class="text-[11px] font-semibold text-gray-600 leading-snug">งบประมาณคงเหลือ</p>
+                        <p id="corporate-budget-remaining" class="text-base font-black text-gray-900 mt-1">-</p>
+                        <p id="corporate-budget-remaining-percent-label" class="text-[10px] text-gray-400 mt-1">-</p>
+                        <div class="w-full h-1.5 bg-gray-200 rounded-full mt-2 overflow-hidden">
+                            <div id="corporate-budget-remaining-bar" class="h-full bg-emerald-500 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Progress -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-sm font-bold text-gray-900">ความคืบหน้าโครงการ</p>
+                        <button onclick="alert('ไปยังหน้าความคืบหน้าโครงการทั้งหมด')" class="text-xs font-semibold text-blue-600 hover:underline">ดูทั้งหมด &gt;</button>
+                    </div>
+                    <div id="corporate-progress-list" class="space-y-3"></div>
+                </div>
+
+                <!-- Review Queue -->
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+                    <p class="text-sm font-bold text-gray-900 px-4 pt-4 pb-2">คิวงานรอการตรวจสอบ (Review Queue)</p>
+                    <div id="corporate-review-queue-list" class="divide-y divide-gray-100"></div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="alert('คุณอยู่ที่หน้า Company แล้ว')" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm ring-2 ring-teal-500 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 14: PROJECT & MILESTONE TRACKING PAGE
+             ========================================== -->
+        <div id="project-tracking-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="px-4 py-3 flex items-center gap-3 border-b">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-900 tracking-tight">Project Tracking</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+
+                <!-- Digital Contract -->
+                <div class="border-2 border-gray-300 rounded-2xl p-4">
+                    <p class="text-sm font-bold text-gray-900 mb-2">Digital Contract</p>
+                    <p class="text-xs text-gray-700">Project : <span id="tracking-project-name">xxx</span></p>
+                    <p class="text-xs text-gray-700 mt-0.5">Date of signing : <span id="tracking-signing-date">xx</span></p>
+                    <button onclick="alert('เปิดสัญญาดิจิทัล (เชื่อม backend ทีหลัง)')" class="w-full mt-4 bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-[0.98] transition">
+                        Click to open
+                    </button>
+                </div>
+
+                <!-- Escrow -->
+                <div class="border-2 border-gray-300 rounded-2xl p-4">
+                    <p class="text-sm font-bold text-gray-900 mb-2">Escrow</p>
+                    <div class="flex items-center gap-2 text-xs text-gray-700 mb-2">
+                        <span>Status</span>
+                        <span id="tracking-escrow-status" class="bg-cyan-300 text-cyan-900 text-[11px] font-semibold px-2 py-0.5 rounded">-</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-700">
+                        <span>งบประมาณทั้งหมด</span>
+                        <span id="tracking-escrow-total" class="font-semibold">-</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-700 mt-1">
+                        <span>อนุมัติแล้ว</span>
+                        <span id="tracking-escrow-approved" class="font-semibold">-</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 rounded-full mt-2.5 overflow-hidden">
+                        <div id="tracking-escrow-bar" class="h-full bg-blue-700 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- งวดงาน (dynamic ตามข้อมูลโครงการจริง) -->
+                <div id="tracking-milestones-list" class="space-y-4">
+                    <p class="text-center text-xs text-gray-400">กำลังโหลด...</p>
+                </div>
+
+                <input type="file" id="tracking-milestone-file-input" class="hidden" onchange="handleMilestoneFileSelected(this)">
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-2 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 15: PROPOSAL WEBFORM PAGE
+             ========================================== -->
+        <div id="proposal-webform-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="px-4 py-3 flex items-center gap-3 border-b">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-900 tracking-tight">Proposal Webform</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4">
+                <form onsubmit="handleProposalWebformSubmit(event)" class="space-y-5">
+                    <div id="proposal-webform-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-lg px-3 py-2"></div>
+
+                    <div>
+                        <label for="proposal-project-name" class="block text-sm font-semibold text-gray-900 mb-2">Project Name :</label>
+                        <input type="text" id="proposal-project-name" name="projectName" class="w-full border border-gray-400 rounded-md px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent" required>
+                    </div>
+
+                    <div>
+                        <label for="proposal-budget-request" class="block text-sm font-semibold text-gray-900 mb-2">Budget Request :</label>
+                        <input type="text" id="proposal-budget-request" name="budgetRequest" inputmode="numeric" class="w-full border border-gray-400 rounded-md px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-900 mb-2">File Uploader :</label>
+                        <label for="proposal-file-input" class="block bg-blue-100 hover:bg-blue-200/70 border border-blue-200 rounded-2xl px-4 py-8 text-center cursor-pointer transition">
+                            <svg class="w-10 h-10 mx-auto text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M12 12v8m0-8l-3 3m3-3l3 3"></path>
+                            </svg>
+                            <p class="text-sm font-semibold text-gray-900 mt-2">Drop the file.</p>
+                            <p class="text-sm font-semibold text-gray-900">PDF. File Only.</p>
+                            <span id="proposal-file-label" class="inline-block mt-4 bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-md shadow-sm">Or Select Files to Upload</span>
+                            <input type="file" id="proposal-file-input" name="proposalFile" accept="application/pdf" class="hidden" onchange="updateFileName(this, 'proposal-file-label', 'Or Select Files to Upload')">
+                        </label>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit" id="proposal-webform-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-3 rounded-full shadow-md active:scale-[0.98] transition">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-2 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 16: PROPOSAL REVIEWER PAGE
+             ========================================== -->
+        <div id="proposal-reviewer-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="px-4 py-3 flex items-center gap-3 border-b">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-900 tracking-tight">Proposal Reviewer</h2>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-5">
+
+                <!-- ข้อมูลผู้สมัคร -->
+                <div>
+                    <p class="text-sm font-bold text-gray-900 mb-2">ข้อมูลผู้สมัคร</p>
+                    <div class="border-2 border-sky-400 rounded-2xl p-3 flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0"></path></svg>
+                        </div>
+                        <div class="min-w-0 text-xs text-gray-700 leading-relaxed">
+                            <p id="reviewer-applicant-name" class="text-sm font-bold text-gray-900">Mr.xxxxxx xxxxx</p>
+                            <p id="reviewer-applicant-university">มหาลัย xxxxxxxxxx xxx</p>
+                            <p id="reviewer-applicant-faculty">คณะxxxxxx</p>
+                            <p id="reviewer-applicant-email">email: xxxxxxxxxx</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ข้อมูลโครงการ -->
+                <div>
+                    <p class="text-sm font-bold text-gray-900 mb-2">ข้อมูลโครงการ</p>
+                    <div class="border border-gray-300 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-start gap-3 text-xs">
+                            <span class="w-24 shrink-0 text-gray-500">ชื่อโครงการ</span>
+                            <span id="reviewer-project-title" class="font-semibold text-gray-900">Ai เพื่อการเกษตรอัจฉริยะ</span>
+                        </div>
+                        <div class="flex items-start gap-3 text-xs">
+                            <span class="w-24 shrink-0 text-gray-500">ทุนที่สมัคร</span>
+                            <span id="reviewer-grant-name" class="font-semibold text-gray-900">xxxxxxxx xxxxxxx</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs">
+                            <span class="w-24 shrink-0 text-gray-500">สถานะ</span>
+                            <span id="reviewer-status-badge" class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">submitted</span>
+                        </div>
+                        <div class="flex items-start gap-3 text-xs">
+                            <span class="w-24 shrink-0 text-gray-500">วันที่ส่ง</span>
+                            <span id="reviewer-sent-date" class="font-semibold text-gray-900">xx . xx . xx</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- เอกสารที่ส่ง -->
+                <div>
+                    <p class="text-sm font-bold text-gray-900 mb-2">เอกสารที่ส่ง ( Proposal / Milestone )</p>
+                    <div class="border border-gray-300 rounded-2xl p-3 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-500 text-white flex items-center justify-center text-[10px] font-black shrink-0">PDF</div>
+                        <div class="min-w-0 flex-1">
+                            <p id="reviewer-file-name" class="text-xs font-semibold text-gray-900 truncate">รายงานxxxxxx xxxxx.pdf</p>
+                            <p id="reviewer-file-size" class="text-[11px] text-gray-400">2.4 MB</p>
+                        </div>
+                        <button onclick="handleDownloadReviewFile()" class="p-2 text-gray-700 hover:text-black active:scale-90 transition shrink-0" aria-label="ดาวน์โหลดเอกสาร">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- บันทึกความคิดเห็น -->
+                <div>
+                    <p class="text-sm font-bold text-gray-900 mb-2">บันทึกความคิดเห็น</p>
+                    <textarea id="reviewer-comment" oninput="updateReviewerCommentCount()" maxlength="2000" rows="4" placeholder="พิมพ์ความคิดเห็นหรือข้อเสนอแนะ...." class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent resize-none"></textarea>
+                    <p id="reviewer-comment-count" class="text-[11px] text-gray-400 text-right mt-1">0/2000</p>
+                </div>
+
+                <!-- ปุ่มตัดสินใจ -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="handleReviewerDecision('rejected')" class="border-2 border-red-500 text-red-600 bg-white text-xs font-bold py-2.5 rounded-full active:scale-95 transition">ไม่อนุมัติ</button>
+                    <button onclick="handleReviewerDecision('revision')" class="border-2 border-amber-400 text-amber-600 bg-white text-xs font-bold py-2.5 rounded-full active:scale-95 transition">ขอแก้ไข</button>
+                    <button onclick="handleReviewerDecision('approved')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition">อนุมัติ</button>
+                </div>
+
+                <button onclick="handleViewSubmissionHistory()" class="w-full border-2 border-blue-700 text-blue-700 text-xs font-bold py-2.5 rounded-full flex items-center justify-center gap-1.5 active:scale-[0.98] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    ดูประวัติการส่งงานทั้งหมด
+                </button>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-2 gap-2 z-10">
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 17: CHAT & CONTACT ROOM PAGE (รายชื่อแชททั้งหมด)
+             ========================================== -->
+        <div id="chat-contact-room-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="px-4 py-3 flex items-center gap-3 border-b">
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-900 tracking-tight">Chat &amp; Contact Room</h2>
+            </div>
+
+            <!-- Contact List -->
+            <div id="chat-contact-list" class="flex-1 overflow-y-auto no-scrollbar divide-y divide-gray-100"></div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-2 gap-2 z-10">
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 18: CHAT CONVERSATION PAGE (แชท 1 ต่อ 1)
+             ========================================== -->
+        <div id="chat-conversation-page" class="app-page hidden bg-white rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar + Contact Info -->
+            <div class="px-4 py-3 flex items-center gap-3 border-b">
+                <button onclick="openChatContactRoom()" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับรายชื่อแชท">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center shrink-0 overflow-hidden">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0"></path></svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p id="chat-contact-name" class="text-sm font-bold text-gray-900 truncate">Mr.xxxxxx xxxxx</p>
+                    <p id="chat-contact-project" class="text-[11px] text-gray-500 truncate">Ai เพื่อการเกษตรอัจฉริยะ</p>
+                </div>
+                <p id="chat-contact-status" class="flex items-center gap-1.5 text-[11px] text-gray-600 shrink-0">
+                    <span id="chat-contact-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    online
+                </p>
+            </div>
+
+            <!-- Message Thread -->
+            <div id="chat-message-list" class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3">
+                <p class="text-center text-[11px] text-gray-400">22 MAY 2026</p>
+            </div>
+
+            <!-- Message Composer -->
+            <form onsubmit="handleSendChatMessage(event)" class="border-t border-gray-200 p-2.5 flex items-center gap-2">
+                <input type="text" id="chat-message-input" placeholder="พิมพ์ข้อความ..." class="flex-1 bg-gray-100 border border-gray-200 rounded-full px-4 py-2 text-xs text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent">
+                <button type="submit" class="w-9 h-9 rounded-full bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center shrink-0 active:scale-90 transition" aria-label="ส่งข้อความ">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"></path></svg>
+                </button>
+            </form>
+
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 19: ESCROW & DISPUTE DASHBOARD PAGE
+             ========================================== -->
+        <div id="escrow-dispute-dashboard-page" class="app-page hidden bg-gray-100 rounded-none sm:rounded-2xl shadow-none sm:shadow-2xl flex-col justify-between h-[100dvh] sm:h-[640px] overflow-hidden transition-all relative">
+
+            <!-- Header Bar -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-b shadow-sm z-10">
+                <button onclick="openManagementConsole()" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้า Verification Console">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <h2 class="text-lg font-bold text-gray-800 tracking-tight">Escrow &amp; Dashboard</h2>
+                <button onclick="navigateTo('landing-page')" class="p-1 text-gray-800 hover:text-black active:scale-90 transition" aria-label="กลับหน้าหลัก">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+
+                <!-- Escrow Summary -->
+                <div class="bg-white border-2 border-gray-300 rounded-2xl p-4">
+                    <div class="grid grid-cols-2 gap-3 items-start">
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Total Amount</p>
+                            <p id="escrow-total-amount" class="text-2xl font-black text-gray-900 mt-3">-</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-gray-200 rounded-2xl px-3 py-2">
+                                <p class="text-[11px] font-semibold text-gray-700">Platform Fee (10%)</p>
+                                <p id="escrow-platform-fee" class="text-xs font-bold text-gray-900 mt-0.5">-</p>
+                            </div>
+                            <div class="bg-gray-200 rounded-2xl px-3 py-2">
+                                <p class="text-[11px] font-semibold text-gray-700">Student Payout</p>
+                                <p id="escrow-student-payout" class="text-xs font-bold text-gray-900 mt-0.5">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <div class="bg-gray-200 rounded-2xl px-3 py-2">
+                            <p class="text-[11px] font-semibold text-gray-700">ประเภทรายการ</p>
+                            <p id="escrow-transaction-type" class="text-xs font-bold text-gray-900 mt-0.5">-</p>
+                        </div>
+                        <div class="bg-gray-200 rounded-2xl px-3 py-2">
+                            <p class="text-[11px] font-semibold text-gray-700">วันที่เวลาล่าสุด</p>
+                            <p id="escrow-last-updated" class="text-xs font-bold text-gray-900 mt-0.5">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dispute Auditor -->
+                <div class="bg-white border-2 border-gray-300 rounded-2xl overflow-hidden">
+                    <p class="text-base font-bold text-gray-900 text-center py-3 border-b border-gray-200">Dispute Auditor</p>
+
+                    <div class="px-4 py-3 border-b border-gray-200">
+                        <label for="dispute-contact-id-search" class="block text-xs text-center text-gray-600 mb-1.5">ค้นหาด้วย Contact ID</label>
+                        <input type="text" id="dispute-contact-id-search" placeholder="Contact ID" class="w-full bg-gray-200 border border-gray-300 rounded-md px-3 py-1.5 text-xs text-gray-800 outline-none focus:ring-2 focus:ring-[#22c55e] focus:border-transparent">
+                    </div>
+
+                    <div id="dispute-thread-list" class="p-4 space-y-4">
+                        <p class="text-center text-xs text-gray-400">กำลังโหลด...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bg-gray-200 border-t border-gray-300 p-2 grid grid-cols-3 gap-2 z-10">
+                <button onclick="openStudentDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-sky-600 tracking-tighter uppercase leading-none mt-0.5">STUDENT DASHBOARD</span>
+                </button>
+
+                <button onclick="openCorporateDashboard()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-gray-700 tracking-tighter uppercase leading-none mt-0.5">COMPANY</span>
+                </button>
+
+                <button onclick="openManagementConsole()" class="bg-white rounded-xl py-2 flex flex-col items-center justify-center shadow-sm hover:bg-gray-50 active:scale-95 transition">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center mb-0.5 text-white">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" stroke-width="2"></rect><path stroke-linecap="round" stroke-width="2" d="M9 4V3a1 1 0 011-1h4a1 1 0 011 1v1"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13l2 2 4-4"></path></svg>
+                    </div>
+                    <span class="text-[9px] font-black text-indigo-700 tracking-tighter uppercase leading-none mt-0.5">MANAGEMENT</span>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         API LAYER
+         ========================================== -->
+
+    <script src="api.js"></script>
+
+    <!-- ==========================================
+         JAVASCRIPT CONTROLLER
+         ========================================== -->
+    <script>
+        /* ---------- Routing ----------
+           ใช้ hash-based routing (#/...) เพราะไม่ต้องพึ่งการตั้งค่า server
+           (ไม่ว่าจะเปิดจากไฟล์ในเครื่อง หรือ static hosting ใดๆ ก็ทำงานได้เหมือนกัน)
+           หน้าไหนไม่มี id ใน dynamicRoute จะได้ route แบบตายตัวจาก PAGE_ROUTES อัตโนมัติ
+           ------------------------------------- */
+        const PAGE_ROUTES = {
+            'login-page': 'login',
+            'role-page': 'register',
+            'student-register-page': 'register/student',
+            'corporate-register-page': 'register/corporate',
+            'verify-email-page': 'verify-email',
+            'enter-code-page': 'verify-otp',
+            'reset-password-page': 'reset-password',
+            'landing-page': 'home',
+            'search-filter-page': 'search',
+            'student-dashboard-page': 'student',
+            'management-page': 'management',
+            'corporate-dashboard-page': 'corporate',
+            'proposal-webform-page': 'proposal/new',
+            'chat-contact-room-page': 'chat',
+            'escrow-dispute-dashboard-page': 'escrow'
+            // grant-detail-page, proposal-reviewer-page, chat-conversation-page, project-tracking-page
+            // มี id แปรผัน เลยต้องส่ง route ตรงๆ ตอนเรียก navigateTo(pageId, route) แทนการ lookup จากตรงนี้
+        };
+
+        let isApplyingRouteFromHash = false;
+        let suppressNextHashChange = false;
+
+        function navigateTo(pageId, explicitRoute) {
+            const pages = document.querySelectorAll('.app-page');
+            pages.forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('flex');
+            });
+
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('flex');
+            }
+
+            // อัปเดต URL ให้ตรงกับหน้าที่กำลังแสดง (เว้นแต่กำลังประมวลผล hashchange อยู่แล้ว กันวนซ้ำ)
+            if (!isApplyingRouteFromHash) {
+                const route = explicitRoute !== undefined ? explicitRoute : PAGE_ROUTES[pageId];
+                if (route !== undefined) {
+                    const newHash = '#/' + route;
+                    if (location.hash !== newHash) {
+                        // การกด/เรียกจาก JS ทำให้ DOM อัปเดตและข้อมูลถูกโหลดไปแล้วในตัว การเปลี่ยน hash
+                        // ตรงนี้แค่ทำให้ URL อยู่ในแถบที่อยู่/กด back ได้ ไม่ต้องให้ hashchange ไปเรียกซ้ำอีกรอบ
+                        suppressNextHashChange = true;
+                        location.hash = newHash;
+                    }
+                }
+            }
+        }
+
+        // ตารางเส้นทาง: segment แรกของ hash -> ฟังก์ชันที่ต้องเรียก (รับ param เป็น segment ที่เหลือ)
+        const ROUTES = {
+            '': () => navigateTo('login-page'),
+            'login': () => navigateTo('login-page'),
+            'register': (param) => {
+                if (param === 'student') navigateTo('student-register-page');
+                else if (param === 'corporate') navigateTo('corporate-register-page');
+                else navigateTo('role-page');
+            },
+            'verify-email': () => navigateTo('verify-email-page'),
+            'verify-otp': () => navigateTo('enter-code-page'),
+            'reset-password': () => navigateTo('reset-password-page'),
+            'home': () => navigateTo('landing-page'),
+            'search': () => navigateTo('search-filter-page'),
+            'grants': (param) => { if (param) openGrantDetail(param); else navigateTo('landing-page'); },
+            'student': () => openStudentDashboard(),
+            'management': () => openManagementConsole(),
+            'corporate': () => openCorporateDashboard(),
+            'tracking': (param) => openProjectTracking(param || null),
+            'proposal': (param) => { if (param === 'new') openProposalWebform(); else navigateTo('landing-page'); },
+            'review': (param) => { if (param) openProposalReviewer(param); else openCorporateDashboard(); },
+            'chat': (param) => { if (param) openChatConversation(param); else openChatContactRoom(); },
+            'escrow': () => openEscrowDisputeDashboard()
+        };
+
+        function applyRouteFromHash() {
+            // hash นี้เพิ่งถูกตั้งโดย navigateTo() เอง (มาจากการกดปุ่มปกติ ไม่ใช่ back/forward/แปะลิงก์)
+            // ข้อมูลถูกโหลดไปแล้วในการเรียกครั้งแรก ไม่ต้องประมวลผลซ้ำ ป้องกันการยิง API ซ้ำสอง
+            if (suppressNextHashChange) {
+                suppressNextHashChange = false;
+                return;
+            }
+
+            const hash = location.hash.replace(/^#\/?/, '');
+            const segments = hash.split('/').filter(Boolean);
+            const routeKey = segments[0] || '';
+            const param = segments.slice(1).join('/') || null;
+
+            const handler = ROUTES[routeKey];
+            isApplyingRouteFromHash = true;
+            try {
+                if (handler) {
+                    handler(param);
+                } else {
+                    navigateTo('login-page');
+                }
+            } finally {
+                isApplyingRouteFromHash = false;
+            }
+        }
+
+        window.addEventListener('hashchange', applyRouteFromHash);
+
+        /* ---------- UI helpers: loading state & error banners ---------- */
+        function setButtonLoading(button, isLoading, loadingText = 'กำลังดำเนินการ...') {
+            if (!button) return;
+            if (isLoading) {
+                button.dataset.originalText = button.dataset.originalText || button.textContent.trim();
+                button.textContent = loadingText;
+                button.disabled = true;
+                button.classList.add('opacity-60', 'pointer-events-none');
+            } else {
+                button.textContent = button.dataset.originalText || button.textContent;
+                button.disabled = false;
+                button.classList.remove('opacity-60', 'pointer-events-none');
+            }
+        }
+
+        function showFormError(errorBoxId, message) {
+            const box = document.getElementById(errorBoxId);
+            if (!box) return;
+            box.textContent = message;
+            box.classList.remove('hidden');
+        }
+
+        function clearFormError(errorBoxId) {
+            const box = document.getElementById(errorBoxId);
+            if (!box) return;
+            box.textContent = '';
+            box.classList.add('hidden');
+        }
+
+        /* ---------- Handlers ---------- */
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearFormError('login-error');
+
+            const payload = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+
+            const submitBtn = document.getElementById('login-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังเข้าสู่ระบบ...');
+
+            try {
+                await API.login(payload);
+                navigateTo('landing-page');
+            } catch (err) {
+                showFormError('login-error', err.message || 'เข้าสู่ระบบไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        function selectRole(role) {
+            if (role === 'student') {
+                navigateTo('student-register-page');
+            } else if (role === 'corporate') {
+                navigateTo('corporate-register-page');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const page = event.target.closest('.app-page');
+            const isStudent = page.id === 'student-register-page';
+            const errorBoxId = isStudent ? 'student-register-error' : 'corporate-register-error';
+            const submitBtn = document.getElementById(isStudent ? 'student-register-submit-btn' : 'corporate-register-submit-btn');
+            clearFormError(errorBoxId);
+
+            let payload = null;
+            if (isStudent) {
+                payload = {
+                    role: 'student',
+                    firstName: document.getElementById('student-firstname').value,
+                    email: document.getElementById('student-email').value,
+                    password: document.getElementById('student-password').value,
+                    confirmPassword: document.getElementById('student-confirm-password').value,
+                    university: document.getElementById('student-university').value,
+                    faculty: document.getElementById('student-faculty').value,
+                    idCardFile: document.getElementById('student-id-card-file').files[0] || null
+                };
+            } else {
+                payload = {
+                    role: 'corporate',
+                    taxId: document.getElementById('corporate-taxid').value,
+                    email: document.getElementById('corporate-email').value,
+                    password: document.getElementById('corporate-password').value,
+                    confirmPassword: document.getElementById('corporate-confirm-password').value,
+                    phone: document.getElementById('corporate-phone').value,
+                    foundedDate: document.getElementById('corporate-founded-date').value,
+                    companyType: document.getElementById('corporate-type').value,
+                    companyDocFile: document.getElementById('corporate-doc-file').files[0] || null
+                };
+            }
+
+            if (payload.password !== payload.confirmPassword) {
+                showFormError(errorBoxId, 'รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+                return;
+            }
+
+            setButtonLoading(submitBtn, true, 'กำลังสมัคร...');
+
+            try {
+                if (isStudent) {
+                    await API.registerStudent(payload);
+                } else {
+                    await API.registerCorporate(payload);
+                }
+                navigateTo('verify-email-page');
+            } catch (err) {
+                showFormError(errorBoxId, err.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleVerifySubmit(event) {
+            event.preventDefault();
+            clearFormError('otp-error');
+
+            const otpCode = Array.from(document.querySelectorAll('.otp-input'))
+                .map(input => input.value)
+                .join('');
+
+            const submitBtn = document.getElementById('otp-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังยืนยัน...');
+
+            try {
+                await API.verifyOtp({ code: otpCode });
+                navigateTo('landing-page');
+            } catch (err) {
+                showFormError('otp-error', err.message || 'รหัสยืนยันไม่ถูกต้อง กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleResetPasswordSubmit(event) {
+            event.preventDefault();
+            clearFormError('reset-password-error');
+
+            const payload = {
+                email: document.getElementById('reset-email').value
+            };
+
+            const submitBtn = document.getElementById('reset-password-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังส่ง...');
+
+            try {
+                await API.requestPasswordReset(payload);
+                navigateTo('login-page');
+            } catch (err) {
+                showFormError('reset-password-error', err.message || 'ส่งคำขอไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        async function handleResendVerificationEmail(event) {
+            event.preventDefault();
+            try {
+                await API.resendVerificationEmail();
+                alert('ส่งอีเมลยืนยันใหม่อีกครั้งแล้ว');
+            } catch (err) {
+                alert(err.message || 'ส่งอีเมลไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        async function handleResendOtp(event) {
+            event.preventDefault();
+            clearFormError('otp-error');
+            try {
+                await API.resendOtp();
+                alert('ส่งรหัส OTP ใหม่อีกครั้งแล้ว');
+            } catch (err) {
+                showFormError('otp-error', err.message || 'ส่งรหัส OTP ไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        /* ---------- Grant Detail Page ---------- */
+        function openGrantDetail(grantId) {
+            const card = document.getElementById('grant-detail-card');
+            card.dataset.grantId = grantId;
+            document.getElementById('grant-detail-title').textContent = 'กำลังโหลด...';
+            document.getElementById('grant-detail-status').textContent = '';
+            document.getElementById('grant-detail-budget').textContent = '';
+            document.getElementById('grant-detail-org').textContent = '';
+            document.getElementById('grant-detail-description').textContent = '';
+
+            navigateTo('grant-detail-page', 'grants/' + encodeURIComponent(grantId));
+
+            API.getGrantById(grantId).then(grant => {
+                if (!grant || card.dataset.grantId !== grantId) return;
+                document.getElementById('grant-detail-title').textContent = grant.title;
+                document.getElementById('grant-detail-status').textContent = grant.status;
+                document.getElementById('grant-detail-budget').textContent = grant.budget;
+                document.getElementById('grant-detail-org').textContent = grant.org;
+                document.getElementById('grant-detail-description').textContent = grant.description;
+            }).catch(err => {
+                document.getElementById('grant-detail-title').textContent = err.message || 'โหลดข้อมูลทุนไม่สำเร็จ';
+            });
+        }
+
+        async function handleApplyGrant(event) {
+            const grantId = document.getElementById('grant-detail-card').dataset.grantId;
+            const applyBtn = event.currentTarget;
+            setButtonLoading(applyBtn, true, 'กำลังส่งใบสมัคร...');
+            try {
+                await API.applyGrant(grantId);
+                alert('ส่งใบสมัครขอทุนเรียบร้อยแล้ว!');
+            } catch (err) {
+                alert(err.message || 'ส่งใบสมัครไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(applyBtn, false);
+            }
+        }
+
+        /* ---------- Student Dashboard Page ---------- */
+        const STUDENT_STATUS_META = {
+            approved: { label: 'Approved', badgeClass: 'bg-emerald-100 text-emerald-700', borderClass: 'border-emerald-300', iconGradient: 'from-emerald-400 to-teal-600' },
+            pending: { label: 'Pending', badgeClass: 'bg-amber-100 text-amber-700', borderClass: 'border-amber-300', iconGradient: 'from-amber-400 to-orange-500' },
+            ejected: { label: 'Ejected', badgeClass: 'bg-red-100 text-red-700', borderClass: 'border-red-300', iconGradient: 'from-slate-400 to-slate-600' }
+        };
+
+        let studentDashboardFilter = 'all';
+        let studentProjects = [];
+
+        function openStudentDashboard() {
+            studentDashboardFilter = 'all';
+            const searchInput = document.getElementById('student-dashboard-search');
+            if (searchInput) searchInput.value = '';
+            navigateTo('student-dashboard-page');
+            loadStudentProjects();
+        }
+
+        async function loadStudentProjects() {
+            const listEl = document.getElementById('student-dashboard-project-list');
+            listEl.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">กำลังโหลด...</p>';
+            document.getElementById('student-dashboard-empty').classList.add('hidden');
+
+            try {
+                studentProjects = await API.getMyProjects();
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-center text-xs text-red-500 py-6">${err.message || 'โหลดโครงการไม่สำเร็จ'}</p>`;
+                return;
+            }
+
+            renderStudentProjects();
+        }
+
+        function setStudentDashboardFilter(filter) {
+            studentDashboardFilter = filter;
+            renderStudentProjects();
+        }
+
+        function renderStudentProjects() {
+            // อัปเดตปุ่ม filter ให้ตรงกับสถานะที่เลือกอยู่
+            document.querySelectorAll('.student-dashboard-filter-btn').forEach(btn => {
+                const isActive = btn.dataset.filter === studentDashboardFilter;
+                btn.classList.toggle('bg-blue-600', isActive);
+                btn.classList.toggle('text-white', isActive);
+                btn.classList.toggle('border-blue-600', isActive);
+                btn.classList.toggle('bg-white', !isActive);
+                btn.classList.toggle('text-gray-700', !isActive);
+                btn.classList.toggle('border-gray-300', !isActive);
+            });
+
+            const searchTerm = (document.getElementById('student-dashboard-search').value || '').trim().toLowerCase();
+
+            const filtered = studentProjects.filter(project => {
+                const matchesFilter = studentDashboardFilter === 'all' || project.status === studentDashboardFilter;
+                const matchesSearch = !searchTerm || project.name.toLowerCase().includes(searchTerm) || project.description.toLowerCase().includes(searchTerm);
+                return matchesFilter && matchesSearch;
+            });
+
+            const listEl = document.getElementById('student-dashboard-project-list');
+            const emptyEl = document.getElementById('student-dashboard-empty');
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+
+            listEl.innerHTML = filtered.map(project => {
+                const meta = STUDENT_STATUS_META[project.status];
+                const proposalButton = project.status === 'ejected'
+                    ? `<button onclick="handleSubmitNewProposal('${project.id}')" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition">Submit a new proposal</button>`
+                    : '';
+
+                return `
+                    <div class="bg-white rounded-2xl p-3 shadow-sm border-2 ${meta.borderClass} flex gap-3">
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br ${meta.iconGradient} shrink-0 shadow-sm"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <p class="text-xs font-bold text-gray-900 leading-snug">Project : ${project.name}</p>
+                            </div>
+                            <p class="text-[11px] mt-0.5">
+                                <span class="text-gray-500">Status : </span>
+                                <span class="${meta.badgeClass} font-semibold px-2 py-0.5 rounded-full">${meta.label}</span>
+                            </p>
+                            <p class="text-[11px] text-gray-500 mt-1 line-clamp-2">Description : ${project.description}</p>
+                            <p class="text-[11px] text-gray-700 font-semibold mt-1">Budget : ${project.budget}</p>
+                            ${proposalButton}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleSubmitNewProposal(projectId) {
+            // projectId ของโครงการที่ถูก ejected — ส่งต่อให้ฟอร์ม Proposal Webform ใช้อ้างอิงตอน submit
+            openProposalWebform(projectId);
+        }
+
+        /* ---------- Management / Verification Console Page ---------- */
+        // ใช้ชุดสี STUDENT_STATUS_META เดียวกับหน้า Student Dashboard เพื่อให้ Pending/Approved/Ejected
+        // แยกสีชัดเจนตรงกันทั้งแอป (ประกาศไว้แล้วด้านบนในส่วน Student Dashboard)
+        let managementProjects = [];
+
+        function openManagementConsole() {
+            navigateTo('management-page');
+            loadManagementProjects();
+        }
+
+        async function loadManagementProjects() {
+            const listEl = document.getElementById('management-project-list');
+            listEl.innerHTML = '<p class="text-center text-xs text-gray-400 py-6">กำลังโหลด...</p>';
+
+            try {
+                managementProjects = await API.getPendingProjects();
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-center text-xs text-red-500 py-6">${err.message || 'โหลดรายการไม่สำเร็จ'}</p>`;
+                return;
+            }
+
+            renderManagementProjects();
+        }
+
+        function renderManagementProjects() {
+            const counts = { pending: 0, approved: 0, ejected: 0 };
+            managementProjects.forEach(project => { counts[project.status]++; });
+
+            document.getElementById('management-count-pending').textContent = counts.pending;
+            document.getElementById('management-count-approved').textContent = counts.approved;
+            document.getElementById('management-count-ejected').textContent = counts.ejected;
+
+            const listEl = document.getElementById('management-project-list');
+            listEl.innerHTML = managementProjects.map(project => {
+                const meta = STUDENT_STATUS_META[project.status];
+                const isPending = project.status === 'pending';
+
+                const actionButtons = isPending ? `
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="handleManagementApprove('${project.id}')" aria-label="Approve" class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-sm active:scale-90 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                        </button>
+                        <button onclick="handleManagementReject('${project.id}')" aria-label="Reject" class="w-8 h-8 rounded-full bg-white border-2 border-red-500 text-red-500 flex items-center justify-center shadow-sm active:scale-90 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>` : '';
+
+                return `
+                    <div class="bg-white border-2 ${meta.borderClass} rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-sm">
+                        <div class="min-w-0 text-xs text-gray-800 leading-relaxed">
+                            <p class="font-bold">Project : ${project.name}</p>
+                            <p>email : ${project.email}</p>
+                            <p class="mt-0.5">Status : <span class="${meta.badgeClass} font-semibold px-2 py-0.5 rounded-full">${meta.label}</span></p>
+                        </div>
+                        ${actionButtons}
+                    </div>`;
+            }).join('');
+        }
+
+        async function handleManagementApprove(projectId) {
+            const project = managementProjects.find(p => p.id === projectId);
+            if (!project) return;
+            try {
+                await API.approveProject(projectId);
+                project.status = 'approved';
+                renderManagementProjects();
+            } catch (err) {
+                alert(err.message || 'อนุมัติไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        async function handleManagementReject(projectId) {
+            const project = managementProjects.find(p => p.id === projectId);
+            if (!project) return;
+            try {
+                await API.rejectProject(projectId);
+                project.status = 'ejected';
+                renderManagementProjects();
+            } catch (err) {
+                alert(err.message || 'ปฏิเสธไม่สำเร็จ กรุณาลองใหม่');
+            }
+        }
+
+        /* ---------- Corporate Dashboard Page ---------- */
+        function openCorporateDashboard() {
+            navigateTo('corporate-dashboard-page');
+            loadCorporateSummary();
+            loadCorporateProgress();
+            loadCorporateReviewQueue();
+        }
+
+        async function loadCorporateSummary() {
+            try {
+                const summary = await API.getCorporateSummary();
+                document.getElementById('corporate-total-budget').textContent = summary.totalBudgetLabel;
+                document.getElementById('corporate-grants-count').textContent = `From ${summary.grantsCount} grants`;
+                document.getElementById('corporate-active-grants').textContent = summary.activeGrants;
+                document.getElementById('corporate-budget-used').textContent = summary.budgetUsedLabel;
+                document.getElementById('corporate-budget-used-percent-label').textContent = `คิดเป็น ${summary.budgetUsedPercent}%`;
+                document.getElementById('corporate-budget-used-bar').style.width = `${summary.budgetUsedPercent}%`;
+                document.getElementById('corporate-budget-remaining').textContent = summary.budgetRemainingLabel;
+                document.getElementById('corporate-budget-remaining-percent-label').textContent = `คิดเป็น ${summary.budgetRemainingPercent}%`;
+                document.getElementById('corporate-budget-remaining-bar').style.width = `${summary.budgetRemainingPercent}%`;
+            } catch (err) {
+                console.error('[loadCorporateSummary]', err);
+            }
+        }
+
+        async function loadCorporateProgress() {
+            const listEl = document.getElementById('corporate-progress-list');
+            listEl.innerHTML = '<p class="text-xs text-gray-400">กำลังโหลด...</p>';
+            try {
+                const progress = await API.getProjectProgress();
+                renderCorporateProgress(progress);
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-xs text-red-500">${err.message || 'โหลดไม่สำเร็จ'}</p>`;
+            }
+        }
+
+        async function loadCorporateReviewQueue() {
+            const listEl = document.getElementById('corporate-review-queue-list');
+            listEl.innerHTML = '<p class="text-xs text-gray-400 px-4 py-3">กำลังโหลด...</p>';
+            try {
+                corporateReviewQueue = await API.getReviewQueue();
+                renderCorporateReviewQueue();
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-xs text-red-500 px-4 py-3">${err.message || 'โหลดไม่สำเร็จ'}</p>`;
+            }
+        }
+
+        let corporateReviewQueue = [];
+
+        function renderCorporateProgress(progress) {
+            const listEl = document.getElementById('corporate-progress-list');
+            listEl.innerHTML = progress.map(item => `
+                <div>
+                    <div class="flex items-center justify-between text-xs font-semibold text-gray-700 mb-1">
+                        <span class="truncate pr-2">${item.name}</span>
+                        <span class="shrink-0 text-gray-500">${item.percent}%</span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-600 rounded-full" style="width: ${item.percent}%"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderCorporateReviewQueue() {
+            const listEl = document.getElementById('corporate-review-queue-list');
+            listEl.innerHTML = corporateReviewQueue.map(item => `
+                <button onclick="openProposalReviewer('${item.id}')" class="w-full text-left px-4 py-3 flex items-center justify-between gap-3 hover:bg-gray-50 active:bg-gray-100 transition">
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold text-gray-900 truncate">${item.projectTitle}</p>
+                        <p class="text-[11px] text-gray-500 truncate">${item.applicantName}</p>
+                        <p class="text-[10px] text-gray-400 mt-0.5">sent ${item.sentDate}</p>
+                    </div>
+                    <span class="shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full ${CORPORATE_STATUS_BADGE_CLASS[item.status] || 'bg-gray-100 text-gray-600'}">${item.status}</span>
+                </button>
+            `).join('');
+        }
+
+        const CORPORATE_STATUS_BADGE_CLASS = {
+            submitted: 'bg-sky-100 text-sky-700',
+            approved: 'bg-emerald-100 text-emerald-700',
+            rejected: 'bg-red-100 text-red-700'
+        };
+
+        /* ---------- Proposal Reviewer Page ---------- */
+        let currentReviewItemId = null;
+
+        function openProposalReviewer(itemId) {
+            currentReviewItemId = itemId;
+            document.getElementById('reviewer-applicant-name').textContent = 'กำลังโหลด...';
+
+            navigateTo('proposal-reviewer-page', 'review/' + encodeURIComponent(itemId));
+
+            API.getProposalDetail(itemId).then(item => {
+                if (!item || currentReviewItemId !== itemId) return;
+
+                document.getElementById('reviewer-applicant-name').textContent = item.applicantName;
+                document.getElementById('reviewer-applicant-university').textContent = item.university;
+                document.getElementById('reviewer-applicant-faculty').textContent = item.faculty;
+                document.getElementById('reviewer-applicant-email').textContent = 'email: ' + item.email;
+                document.getElementById('reviewer-project-title').textContent = item.projectTitle;
+                document.getElementById('reviewer-grant-name').textContent = item.grantName;
+                document.getElementById('reviewer-sent-date').textContent = item.sentDate;
+                document.getElementById('reviewer-file-name').textContent = item.fileName;
+                document.getElementById('reviewer-file-size').textContent = item.fileSizeMB + ' MB';
+
+                const statusBadge = document.getElementById('reviewer-status-badge');
+                statusBadge.textContent = item.status;
+                statusBadge.className = 'inline-block text-xs font-semibold px-3 py-1 rounded-full ' + (CORPORATE_STATUS_BADGE_CLASS[item.status] || 'bg-gray-100 text-gray-600');
+
+                const commentBox = document.getElementById('reviewer-comment');
+                commentBox.value = '';
+                updateReviewerCommentCount();
+            }).catch(err => {
+                document.getElementById('reviewer-applicant-name').textContent = err.message || 'โหลดข้อมูลไม่สำเร็จ';
+            });
+        }
+
+        function updateReviewerCommentCount() {
+            const commentBox = document.getElementById('reviewer-comment');
+            document.getElementById('reviewer-comment-count').textContent = commentBox.value.length + '/2000';
+        }
+
+        async function handleReviewerDecision(decision) {
+            if (!currentReviewItemId) return;
+            const comment = document.getElementById('reviewer-comment').value;
+
+            try {
+                await API.reviewProposal(currentReviewItemId, { decision, comment });
+            } catch (err) {
+                alert(err.message || 'บันทึกผลการพิจารณาไม่สำเร็จ กรุณาลองใหม่');
+                return;
+            }
+
+            const decisionMessage = decision === 'approved'
+                ? 'อนุมัติโครงการเรียบร้อยแล้ว'
+                : decision === 'rejected'
+                    ? 'ปฏิเสธโครงการเรียบร้อยแล้ว'
+                    : 'ส่งคำขอแก้ไขเรียบร้อยแล้ว';
+
+            alert(decisionMessage);
+            openCorporateDashboard();
+        }
+
+        async function handleViewSubmissionHistory() {
+            if (!currentReviewItemId) return;
+            try {
+                const history = await API.getSubmissionHistory(currentReviewItemId);
+                alert(history.length === 0 ? 'ยังไม่มีประวัติการส่งงานก่อนหน้านี้' : `พบประวัติการส่งงาน ${history.length} รายการ`);
+            } catch (err) {
+                alert(err.message || 'โหลดประวัติไม่สำเร็จ');
+            }
+        }
+
+        async function handleDownloadReviewFile() {
+            if (!currentReviewItemId) return;
+            try {
+                const { url } = await API.downloadProposalFile(currentReviewItemId);
+                window.open(url, '_blank');
+            } catch (err) {
+                alert(err.message || 'ดาวน์โหลดเอกสารไม่สำเร็จ');
+            }
+        }
+
+        /* ---------- Chat & Contact Room (รายชื่อแชท + ห้องแชท 1 ต่อ 1) ---------- */
+        let chatContacts = [];
+        let currentChatContactId = null;
+
+        function openChatContactRoom() {
+            currentChatContactId = null;
+            navigateTo('chat-contact-room-page');
+            loadChatContacts();
+        }
+
+        async function loadChatContacts() {
+            const listEl = document.getElementById('chat-contact-list');
+            listEl.innerHTML = '<p class="text-xs text-gray-400 px-4 py-3">กำลังโหลด...</p>';
+            try {
+                chatContacts = await API.getChatContacts();
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-xs text-red-500 px-4 py-3">${err.message || 'โหลดรายชื่อแชทไม่สำเร็จ'}</p>`;
+                return;
+            }
+            renderChatContactList();
+        }
+
+        function renderChatContactList() {
+            const listEl = document.getElementById('chat-contact-list');
+            listEl.innerHTML = chatContacts.map(contact => {
+                const lastMessage = contact.messages[contact.messages.length - 1];
+                const preview = lastMessage
+                    ? (lastMessage.sender === 'me' ? 'คุณ: ' : '') + lastMessage.text
+                    : 'ยังไม่มีข้อความ';
+                const statusDotClass = contact.online ? 'bg-emerald-500' : 'bg-gray-300';
+
+                return `
+                    <button onclick="openChatConversation('${contact.id}')" class="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-50 active:bg-gray-100 transition">
+                        <div class="relative shrink-0">
+                            <div class="w-11 h-11 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                                <svg class="w-7 h-7 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0"></path></svg>
+                            </div>
+                            <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${statusDotClass}"></span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-gray-900 truncate">${contact.name}</p>
+                            <p class="text-[11px] text-gray-500 truncate">${contact.project}</p>
+                            <p class="text-[11px] text-gray-400 truncate mt-0.5">${preview}</p>
+                        </div>
+                    </button>`;
+            }).join('');
+        }
+
+        function openChatConversation(contactId) {
+            currentChatContactId = contactId;
+
+            const proceed = (contact) => {
+                if (!contact) {
+                    alert('ไม่พบห้องแชทนี้');
+                    openChatContactRoom();
+                    return;
+                }
+
+                document.getElementById('chat-contact-name').textContent = contact.name;
+                document.getElementById('chat-contact-project').textContent = contact.project;
+                document.getElementById('chat-contact-status').lastChild.textContent = contact.online ? 'online' : 'offline';
+                document.getElementById('chat-contact-status-dot').className = 'w-2 h-2 rounded-full shrink-0 ' + (contact.online ? 'bg-emerald-500' : 'bg-gray-300');
+
+                navigateTo('chat-conversation-page', 'chat/' + encodeURIComponent(contactId));
+
+                const listEl = document.getElementById('chat-message-list');
+                listEl.innerHTML = '<p class="text-center text-[11px] text-gray-400">กำลังโหลด...</p>';
+
+                API.getChatThread(contactId).then(messages => {
+                    if (currentChatContactId !== contactId) return;
+                    contact.messages = messages;
+                    renderChatMessages(contact);
+                }).catch(err => {
+                    listEl.innerHTML = `<p class="text-center text-[11px] text-red-500">${err.message || 'โหลดข้อความไม่สำเร็จ'}</p>`;
+                });
+            };
+
+            // ถ้ายังไม่เคยโหลดรายชื่อแชทมาก่อน (เช่น เปิดจากลิงก์ตรง หรือ refresh หน้านี้) ให้ดึงมาก่อน
+            const cachedContact = chatContacts.find(c => c.id === contactId);
+            if (cachedContact) {
+                proceed(cachedContact);
+            } else {
+                API.getChatContacts().then(contacts => {
+                    chatContacts = contacts;
+                    proceed(chatContacts.find(c => c.id === contactId));
+                }).catch(() => proceed(null));
+            }
+        }
+
+        function renderChatMessages(contact) {
+            const listEl = document.getElementById('chat-message-list');
+            const bubblesHtml = contact.messages.map(msg => {
+                const isMe = msg.sender === 'me';
+                return `
+                    <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[75%] ${isMe ? 'bg-blue-700 text-white rounded-br-sm' : 'bg-gray-100 text-gray-800 rounded-bl-sm'} text-xs rounded-2xl px-3 py-2 shadow-sm">
+                            <p>${escapeHtml(msg.text)}</p>
+                            <p class="text-[10px] ${isMe ? 'text-blue-100' : 'text-gray-400'} mt-1">${escapeHtml(msg.time)}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            listEl.innerHTML = '<p class="text-center text-[11px] text-gray-400">22 MAY 2026</p>' + bubblesHtml;
+            listEl.scrollTop = listEl.scrollHeight;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        async function handleSendChatMessage(event) {
+            event.preventDefault();
+            const contact = chatContacts.find(c => c.id === currentChatContactId);
+            if (!contact) return;
+
+            const input = document.getElementById('chat-message-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            input.value = '';
+            try {
+                const message = await API.sendChatMessage(contact.id, text);
+                contact.messages.push(message);
+                renderChatMessages(contact);
+            } catch (err) {
+                alert(err.message || 'ส่งข้อความไม่สำเร็จ กรุณาลองใหม่');
+                input.value = text;
+            }
+        }
+
+        /* ---------- Escrow & Dispute Dashboard Page ---------- */
+        const DISPUTE_SENDER_META = {
+            company: { label: 'Company', align: 'items-end', bubbleClass: 'bg-emerald-200 text-gray-800', avatarClass: 'bg-slate-700 text-white', iconPath: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9m4 0V7m0 0h4m-4 0H9' },
+            student: { label: 'นักศึกษา', align: 'items-start', bubbleClass: 'border border-gray-300 text-gray-800', avatarClass: 'bg-amber-200 text-amber-800', iconPath: 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 1115 0' }
+        };
+
+        function openEscrowDisputeDashboard() {
+            navigateTo('escrow-dispute-dashboard-page');
+            loadEscrowSummary();
+            loadDisputeThread();
+        }
+
+        async function loadEscrowSummary() {
+            try {
+                const summary = await API.getEscrowSummary();
+                document.getElementById('escrow-total-amount').textContent = summary.totalAmountLabel;
+                document.getElementById('escrow-platform-fee').textContent = summary.platformFeeLabel;
+                document.getElementById('escrow-student-payout').textContent = summary.studentPayoutLabel;
+                document.getElementById('escrow-transaction-type').textContent = summary.transactionType;
+                document.getElementById('escrow-last-updated').textContent = summary.lastUpdatedLabel;
+            } catch (err) {
+                console.error('[loadEscrowSummary]', err);
+            }
+        }
+
+        async function loadDisputeThread(contactId) {
+            const listEl = document.getElementById('dispute-thread-list');
+            listEl.innerHTML = '<p class="text-center text-xs text-gray-400">กำลังโหลด...</p>';
+            try {
+                const messages = await API.getDisputeThread(contactId);
+                renderDisputeThread(messages);
+            } catch (err) {
+                listEl.innerHTML = `<p class="text-center text-xs text-red-500">${err.message || 'โหลดประวัติไม่สำเร็จ'}</p>`;
+            }
+        }
+
+        function renderDisputeThread(messages) {
+            const listEl = document.getElementById('dispute-thread-list');
+            if (messages.length === 0) {
+                listEl.innerHTML = '<p class="text-center text-xs text-gray-400">ไม่พบข้อพิพาทของ Contact ID นี้</p>';
+                return;
+            }
+
+            listEl.innerHTML = messages.map(msg => {
+                const meta = DISPUTE_SENDER_META[msg.sender] || DISPUTE_SENDER_META.student;
+                const avatarHtml = `
+                    <div class="w-7 h-7 rounded-full ${meta.avatarClass} flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${meta.iconPath}"></path></svg>
+                    </div>`;
+                const bubbleHtml = `<div class="${meta.bubbleClass} rounded-2xl px-3 py-2.5 max-w-[220px] text-xs">${escapeHtml(msg.text)}</div>`;
+                const rowHtml = msg.sender === 'company'
+                    ? bubbleHtml + avatarHtml
+                    : avatarHtml + bubbleHtml;
+
+                return `
+                    <div class="flex flex-col ${meta.align}">
+                        <p class="text-[11px] font-semibold text-gray-500 mb-1">${meta.label}</p>
+                        <div class="flex items-end gap-2">${rowHtml}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        /* ---------- Project & Milestone Tracking Page ---------- */
+        let currentTrackingProjectId = null;
+
+        function openProjectTracking(projectId) {
+            currentTrackingProjectId = projectId || null;
+            navigateTo('project-tracking-page', 'tracking' + (currentTrackingProjectId ? '/' + encodeURIComponent(currentTrackingProjectId) : ''));
+
+            const listEl = document.getElementById('tracking-milestones-list');
+            listEl.innerHTML = '<p class="text-center text-xs text-gray-400">กำลังโหลด...</p>';
+
+            API.getProjectTracking(currentTrackingProjectId).then(data => {
+                document.getElementById('tracking-project-name').textContent = data.projectName;
+                document.getElementById('tracking-signing-date').textContent = data.signingDate;
+                document.getElementById('tracking-escrow-status').textContent = data.escrowStatusLabel;
+                document.getElementById('tracking-escrow-total').textContent = data.escrowTotalLabel;
+                document.getElementById('tracking-escrow-approved').textContent = data.escrowApprovedLabel;
+                document.getElementById('tracking-escrow-bar').style.width = `${data.escrowApprovedPercent}%`;
+                renderMilestones(data.milestones);
+            }).catch(err => {
+                listEl.innerHTML = `<p class="text-center text-xs text-red-500">${err.message || 'โหลดข้อมูลไม่สำเร็จ'}</p>`;
+            });
+        }
+
+        function renderMilestones(milestones) {
+            const listEl = document.getElementById('tracking-milestones-list');
+            listEl.innerHTML = milestones.map(milestone => {
+                const actionHtml = milestone.status === 'approved'
+                    ? `<button disabled class="w-full mt-3 bg-emerald-500 text-white text-sm font-bold py-2.5 rounded-full shadow-sm flex items-center justify-center gap-1.5 opacity-90 cursor-default">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                        อนุมัติแล้ว ดำเนินการต่อไป
+                    </button>`
+                    : `<button onclick="handleUploadMilestone(${milestone.number})" class="w-full mt-3 bg-blue-700 hover:bg-blue-800 text-white text-sm font-bold py-2.5 rounded-full shadow-sm flex items-center justify-center gap-1.5 active:scale-[0.98] transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 9l5-5 5 5M12 4v12"></path></svg>
+                        อัปโหลดและส่งงวดงาน
+                    </button>`;
+
+                return `
+                    <div class="border-2 border-gray-300 rounded-2xl p-4">
+                        <p class="text-sm font-bold text-gray-900">งวดที่ ${milestone.number}</p>
+                        <p class="text-xs text-gray-500 mb-3">${milestone.description}</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-gray-200 rounded-xl p-3">
+                                <p class="text-[11px] font-bold text-gray-700">จำนวนเงิน</p>
+                                <p class="text-xs text-gray-800 mt-2">${milestone.amountLabel}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">${milestone.percentLabel}</p>
+                            </div>
+                            <div class="bg-gray-200 rounded-xl p-3">
+                                <p class="text-[11px] font-bold text-gray-700">กำหนดส่งงาน</p>
+                                <p class="text-xs text-gray-800 mt-2">${milestone.dueDateLabel}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5">due_date</p>
+                            </div>
+                        </div>
+                        ${actionHtml}
+                    </div>`;
+            }).join('');
+        }
+
+        let pendingMilestoneNumber = null;
+
+        function handleUploadMilestone(milestoneNumber) {
+            pendingMilestoneNumber = milestoneNumber;
+            document.getElementById('tracking-milestone-file-input').click();
+        }
+
+        async function handleMilestoneFileSelected(input) {
+            const file = input.files && input.files[0];
+            input.value = '';
+            if (!file || pendingMilestoneNumber === null) return;
+
+            try {
+                await API.submitMilestone(pendingMilestoneNumber, file);
+                alert('อัปโหลดและส่งงวดงานที่ ' + pendingMilestoneNumber + ' เรียบร้อยแล้ว');
+            } catch (err) {
+                alert(err.message || 'อัปโหลดไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                pendingMilestoneNumber = null;
+            }
+        }
+
+        /* ---------- Proposal Webform Page ---------- */
+        let currentProposalProjectId = null;
+
+        function openProposalWebform(projectId) {
+            currentProposalProjectId = projectId || null;
+            navigateTo('proposal-webform-page');
+        }
+
+        async function handleProposalWebformSubmit(event) {
+            event.preventDefault();
+            clearFormError('proposal-webform-error');
+
+            const payload = {
+                relatedProjectId: currentProposalProjectId,
+                projectName: document.getElementById('proposal-project-name').value,
+                budgetRequest: document.getElementById('proposal-budget-request').value,
+                proposalFile: document.getElementById('proposal-file-input').files[0] || null
+            };
+
+            if (!payload.proposalFile) {
+                showFormError('proposal-webform-error', 'กรุณาแนบไฟล์ข้อเสนอโครงการ (PDF)');
+                return;
+            }
+
+            const submitBtn = document.getElementById('proposal-webform-submit-btn');
+            setButtonLoading(submitBtn, true, 'กำลังส่ง...');
+
+            try {
+                await API.submitProposal(payload);
+                alert('ส่งข้อเสนอโครงการเรียบร้อยแล้ว');
+                event.target.reset();
+                document.getElementById('proposal-file-label').textContent = 'Or Select Files to Upload';
+                openStudentDashboard();
+            } catch (err) {
+                showFormError('proposal-webform-error', err.message || 'ส่งข้อเสนอไม่สำเร็จ กรุณาลองใหม่');
+            } finally {
+                setButtonLoading(submitBtn, false);
+            }
+        }
+
+        function updateFileName(input, labelId, defaultText) {
+            const label = document.getElementById(labelId);
+            if (input.files && input.files[0]) {
+                label.textContent = "✓ " + input.files[0].name.substring(0, 15) + "...";
+            } else {
+                label.textContent = defaultText;
+            }
+        }
+
+        /* Auto-Slide Banner Carousel Controller */
+        let currentSlideIndex = 0;
+        const totalSlides = 3;
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            const slider = document.getElementById('banner-slider');
+            const dots = document.querySelectorAll('.banner-dot');
+            
+            if (slider) {
+                slider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+            }
+
+            dots.forEach((dot, i) => {
+                if (i === currentSlideIndex) {
+                    dot.classList.remove('bg-white/50');
+                    dot.classList.add('bg-white', 'w-4');
+                } else {
+                    dot.classList.remove('bg-white', 'w-4');
+                    dot.classList.add('bg-white/50', 'w-2');
+                }
+            });
+        }
+
+        setInterval(() => {
+            const landingPage = document.getElementById('landing-page');
+            if (landingPage && !landingPage.classList.contains('hidden')) {
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                goToSlide(currentSlideIndex);
+            }
+        }, 3500);
+
+        /* OTP Auto Tab Focus */
+        document.addEventListener('DOMContentLoaded', () => {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            otpInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        otpInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // เข้าหน้าตาม URL ที่มีอยู่ตอนโหลดหน้าเว็บ (รองรับ refresh / เปิดลิงก์ตรง / bookmark)
+            // ถ้ายังไม่มี hash เลย (เปิดเว็บครั้งแรก) ให้ตั้งเป็นหน้า login เพื่อให้ URL สอดคล้องกับหน้าที่เห็น
+            if (location.hash) {
+                applyRouteFromHash();
+            } else {
+                navigateTo('login-page');
+            }
+        });
+    </script>
+</body>
+</html>
